@@ -36,9 +36,14 @@ void healing();             //배 체력 회복하는 함수
 void breakEffect(COORD pos);    //부숴지는 이펙트
 void goalEffect(COORD pos);    //부숴지는 이펙트
 void makeitem(int p);           //아이템 만드는 함수
+void showVaccineBar();      //백신 완성도 바 생성 함수
+void printPer();        //바 옆 퍼센티지 출력 함수
+void showBar();     //바 통합 출력
+void updateBar();       //바 업데이트 함수
 void breakPlayer();         //플레이어 체력 0일때 없애는 함수
 void dieShip();             //배 죽이는 함수
 void itemUse();         //아이템 사용하는 함수
+void bloodRouteUpgrade();       //감염경로 혈액 업그레이드 시
 int endCheck();
 
 
@@ -78,6 +83,19 @@ itemstart2 = 0;             //아이템 사용한 시간
 itemstart3 = 0;             //아이템 사용한 시간
 itemstart4 = 0;             //아이템 사용한 시간
 
+
+/*업그레이드 골드표*/
+goldSpeed[5] = { 50, 150, 250, 350, 450 };          //속도 업그레이드에 사용하는 골드
+goldHealth[10] = { 25, 50, 100, 125, 150, 175, 200, 250, 250, 250 };       //체력 업그레이드에 사용하는 골드
+goldPower[10] = { 25, 50, 100, 125, 150, 175, 200, 250, 250, 250 };     //힘 업그레이드에 사용하는 골드
+goldWater[5] = { 100,300, 500, 700 };     //물 업그레이드에 사용하는 골드
+goldHealing[5] = { 50, 100, 200, 350, 500 };            //선착장 업그레이드에 사용하는 골드
+goldPropagation[2] = { 500, 1000 };
+goldFatality[2] = { 1000,2000 };
+goldAnimal = 500;
+goldBlood = 500;
+goldAir = 500;
+goldGoldup[2] = { 300,800 };    // 재화획득량 업그레이드 골드
 
 /*적배 관련 변수*/
 int moveRoute[8][200] = { {0,1,1,1,1,1,1,1,1,1,1,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-2,-2,-2,-2,-2,-2,-2,-2,-2,3},//1번움직임
@@ -159,6 +177,8 @@ void main()
     printGold();
     drawFirstTap();
     VirusShipSpawn(head);       // 바이러스배 리스트에 추가
+    showBar();
+    printPer();
     srand((unsigned int)time(NULL));        //랜덤
     int nowstage = 0;
     int cnt = 0;
@@ -501,6 +521,8 @@ void ProcessKeyInput() {//키 입력받는 함수
 
     for (int i = 0; i < 5; i++) {
         updateTime();
+        showBar();
+        printPer();
         if (_kbhit() != 0) {
             key = _getch();
             switch (key) {
@@ -597,16 +619,43 @@ void ProcessKeyInput() {//키 입력받는 함수
                     }
                     if (currentvt == 0) {           //바이러스 강화 탭 중 전파력일 경우
                         check = 1;
+                        if (vt.gold < goldPropagation[currentPropagation]) { break; }
+                        for (int i = 0; i < 5; i++) {   // 전파력 업그레이드하여 바이러스 전파에 반영
+                            if (vt.propagation[i] - rt.animal >= 2) { continue; }
+                            vt.propagation[i] += 1;
+                        }
+                        if (currentPropagation > 2) { currentPropagation -= 1; }
+                        if (currentPropagation >= 2) break;
+                        vt.gold -= goldPropagation[currentPropagation];
+                        currentPropagation += 1;
+                        printGold();
                         colorChangeVirusTap(0, currentWaterLv);
                         break;
                     }
                     else if (currentvt == 1) {      //바이러스 강화 탭 중 치사율일 경우
                         check = 1;
+                        if (vt.gold < goldFatality[currentFatality]) { break; }
+                        for (int i = 0; i < 5; i++) {   // 치사율 업그레이드하여 사망자수에 반영 / 감염자수에도 영향
+                            if (currentBlood == 1 && vt.fatality[i] - rt.blood * 2 >= 2) { continue; }
+                            if (currentBlood != 1 && vt.fatality[i] >= 2) { continue; }
+                            vt.fatality[i] += 1;
+                        }
+                        if (currentFatality > 2) { currentFatality -= 1; }
+                        if (currentFatality >= 2) break;
+                        vt.gold -= goldFatality[currentFatality];
+                        currentFatality += 1;
+                        printGold();
                         colorChangeVirusTap(1, currentWaterLv);
                         break;
                     }
                     else if (currentvt == 2) {
                         check = 1;
+                        if (vt.gold < goldGoldup[vt.goldup]) { break; }
+                        if (vt.goldup == 2) { break; }
+                        vt.gold -= goldGoldup[vt.goldup];
+                        vt.goldup += 1;
+                        goldUp = goldUp * 2;
+                        printGold();
                         colorChangeVirusTap(2, currentWaterLv);
                         break;
                     }
@@ -621,26 +670,69 @@ void ProcessKeyInput() {//키 입력받는 함수
                     }
                     if (currentrt == 0) {       //감염경로 동물
                         check = 1;
+                        if (rt.animal > 1)  break;  // 각 물 업그레이드 레벨마다 MAX 1 / 물 업그레이드 시 0으로 초기화
+                        if (goldAnimal > vt.gold) break;
+                        rt.animal += 1;
+                        vt.propagation[currentWaterLv]++; // 대륙 전파력 상승 / 현재 업그레이드 중인 대륙에만 영향
+                        vt.gold -= goldAnimal;
+                        printGold();
                         colorChangeRouteTap(0);
                         break;
                     }
                     else if (currentrt == 1) {  //감염경로 혈액
                         check = 1;
+                        if (rt.blood > 1)  break;  // 각 물 업그레이드 레벨마다 MAX 1 / 물 업그레이드 시 0으로 초기화
+                        if (goldBlood > vt.gold) break;
+                        rt.blood += 1;
+                        vt.gold -= goldBlood;
+                        printGold();
+                        bloodRouteUpgrade();                // 돌연변이 / 현재 업그레이드 중인 대륙의 치사율 랜덤으로 0단계로 하강 또는 2단계 상승
                         colorChangeRouteTap(1);
+                        if (currentBlood == 0) {
+                        }
+                        else if (currentBlood == 1) {
+                        }
                         break;
                     }
                     else if (currentrt == 2) {      //감염경로 공기
                         check = 1;
+                        if (rt.air == 1) break;
+                        if (goldAir > vt.gold) break;
+                        rt.air += 1;                // 바이러스 전파 맵 반영 이후 추가
+                        vt.gold -= goldAir;
+                        printGold();
                         colorChangeRouteTap(2);
                         break;
                     }
                     else if (currentrt == 3) {      //감염경로 물
                         check = 1;
+                        if (rt.water == 4)  break;
+                        if (vt.gold < goldWater[rt.water]) break;
+                        vt.gold -= goldWater[rt.water];
+                        rt.water += 1;
+                        printGold();
+                        vt.propagation[currentWaterLv] -= rt.animal;
+                        rt.animal = 0;
+                        if (currentBlood == 1) {
+                            vt.fatality[currentWaterLv] -= rt.blood * 2;
+                        }
+                        currentBlood = -1;
+                        rt.blood = 0;
+                        if (currentTap == 1) {
+                            colorChangeRouteTap(currentrt);
+                        }
+                        currentWaterLv = rt.water;
                         colorChangeRouteTap(3);
                         break;
                     }
                     else if (currentrt == 4) {      //감염경로 선착장
                         check = 1;
+                        if (rt.port == 5)  break;
+                        if (vt.gold < goldHealing[rt.port]) break;
+                        healingPoint += upVirusHealing[rt.port];
+                        vt.gold -= goldHealing[rt.port];
+                        printGold();
+                        rt.port += 1;
                         colorChangeRouteTap(4);
                         break;
                     }
@@ -654,18 +746,39 @@ void ProcessKeyInput() {//키 입력받는 함수
                     }
 
                     if (currentst == 0) { // 공격력
+                        if (st.power == 10) break;
+                        if (vt.gold < goldPower[st.power]) break;
                         check = 1;
+                        SHIP* nowShip = head->next;
+                        nowShip->power += upVirusPower[st.power];
+                        vt.gold -= goldPower[st.power];
+                        printGold();
+                        st.power += 1;
                         colorChangeShipTap(0);
                         break;
                     }
 
                     else if (currentst == 1) { // 내구력
+                        if (st.health == 10) break;
+                        if (vt.gold < goldHealth[st.health]) break;
                         check = 1;
+                        SHIP* nowShip = head->next;
+                        nowShip->health += upVirusHealth[st.health];
+                        nowShip->maxhp += upVirusHealth[st.health];
+                        vt.gold -= goldHealth[st.health];
+                        printGold();
+                        st.health += 1;
                         colorChangeShipTap(1);
                         break;
                     }
                     else if (currentst == 2) { // 속도
+                        if (st.speed == 5) break;
+                        if (vt.gold < goldSpeed[st.speed]) break;
                         check = 1;
+                        virusSpeed = upVirusSpeed[st.speed];
+                        vt.gold -= goldSpeed[st.speed];
+                        printGold();
+                        st.speed += 1;
                         colorChangeShipTap(2);
                         break;
                     }
@@ -680,26 +793,54 @@ void ProcessKeyInput() {//키 입력받는 함수
                     }
                     if (currentit == 0) { //가짜기름유포(백신 배 속도 감소)
                         check = 1;
+                        if (itemList[0] > 0) {
+                            itemList[0] -= 1;
+                            itemwork[0] = 1;
+                            itemUse();
+                        }
                         colorChangeItemTap(0);
                         break;
                     }
                     else if (currentit == 1) { //주인공 배 체력 회복
                         check = 1;
+                        if (itemList[1] > 0) {
+                            itemList[1] -= 1;
+                            itemwork[1] = 1;
+                            itemUse();
+                        }
                         colorChangeItemTap(1);
                         break;
                     }
                     else if (currentit == 2) { // 일시적 속도 증가 최대로(1)
                         check = 1;
+                        if (itemList[2] > 0) {
+                            itemList[2] -= 1;
+                            itemwork[2] = 1;
+                            itemstart2 = vt.min;
+                            itemUse();
+                        }
                         colorChangeItemTap(2);
                         break;
                     }
                     else if (currentit == 3) { // 모든 상대 배 부시기
                         check = 1;
+                        if (itemList[3] > 0) {
+                            itemList[3] -= 1;
+                            itemwork[3] = 1;
+
+                            itemUse();
+                        }
                         colorChangeItemTap(3);
                         break;
                     }
                     else if (currentit == 4) { // 얻는 골드 획득량 영구적 증가
                         check = 1;
+                        itemList[4] -= 1;
+                        itemwork[4] = 1;
+                        itemstart4 = vt.min;
+                        itemUse();
+                        goldUpitemusing = 1;
+                        goldUporigin = goldUp;
                         colorChangeItemTap(4);
                         break;
                     }
@@ -1295,7 +1436,43 @@ void makeitem(int p) {
         break;
     }
 }
+void showBar()            // Bar 통합
+{
+    showVaccineBar();
+}
 
+void showVaccineBar()
+{
+    updateBar();
+    COORD curPos = { 0,1 };
+    for (int i = 0; i < BAR_WIDTH - 1; i++)
+    {
+        SetCurrentCursorPos(curPos.X + (i + 1) * 2, curPos.Y);
+        if (vaccineMaturity[0][i] == 0) {
+            Colorset(black, white);
+            printf("  ");
+        }
+        else if (vaccineMaturity[0][i] == 1)
+        {
+            Colorset(white, white);
+            printf("■");
+        }
+    }
+}
+
+void printPer()
+{
+    Colorset(black, red);
+    SetCurrentCursorPos(104, 1);
+    printf("%d%% 백신완성도", vaccinePer);
+}
+
+void updateBar()
+{
+    for (int i = 0; i < vaccinePer / 2 - 1; i++)
+        vaccineMaturity[0][i] = 1;
+
+}
 
 void breakPlayer() {
     die = 1;
@@ -1319,6 +1496,20 @@ void dieShip() {
         }
     }
 }
+
+void bloodRouteUpgrade() {
+    int temp = rand() % 2;
+    if (temp == 0) {
+        vt.fatality[currentWaterLv] = 0; // 현재 업그레이드 중인 대륙들에 대한 치사율 0단계로
+        currentBlood = 0;
+
+    }
+    if (temp == 1) {
+        vt.fatality[currentWaterLv] += 2; // 현재 업그레이드 중인 대륙들에 대한 치사율 2단계 업그레이드 / 물 업그레이드 시 리셋
+        currentBlood = 1;
+    }
+}
+
 
 
 int endCheck() {
