@@ -57,5 +57,6 @@ void colorChangeRouteTap(int i);
 void colorChangeShipTap(int i);
 void colorChangeItemTap(int i);
 void selectedTap(int i);
-int drawFirstTap();
+void drawFirstTap();
 void printTime(); // time ฐüทร
+void printGold();
