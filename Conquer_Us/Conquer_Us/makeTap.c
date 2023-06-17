@@ -1014,7 +1014,7 @@ void selectedTap(int i) {       //선택된 탭 나타내기
     Colorset(black, white);
 }
 
-int drawFirstTap() {        //아무 것도 선택하기 전 처음 탭 나타내기
+void drawFirstTap() {        //아무 것도 선택하기 전 처음 탭 나타내기
     Colorset(black, white);
     int key = 0;
     int check = 0;
@@ -1064,4 +1064,13 @@ void printTime() {
     printf("                              ");
     SetCurrentCursorPos(126, 39);
     printf("현재시간 : %d일 %d시간 %d분", vt.min / 5760, vt.min % 5760 / 240, vt.min % 240 / 4);
+}
+
+/*Gold 관련*/
+void printGold() {
+    Colorset(black, white);
+    SetCurrentCursorPos(76, 39);
+    printf("         ");
+    SetCurrentCursorPos(76, 39);
+    printf("%dG", vt.gold);
 }

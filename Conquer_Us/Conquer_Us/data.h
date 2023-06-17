@@ -18,10 +18,6 @@ typedef struct SHIP {
     int moveRoute[200];
 }SHIP;
 
-SHIP* head;   //더미 머리
-SHIP* tail;   //더미 꼬리 
-int size;   //링크드 리스트 크기
-
 int goldSpeed[5];
 int goldHealth[10];
 int goldPower[10];
@@ -39,7 +35,20 @@ int currentst;
 int currentrt;
 int currentit;
 int check;
+int itemwork[5];
+int itemstart0;
+int itemstart1;
+int itemstart2;
+int itemstart3;
+int itemstart4;
+int nowShiphealth;
 int currentWaterLv;
 int currentBlood;
 int currentPropagation;
 int currentFatality;
+
+
+
+SHIP* head;   //더미 머리
+SHIP* tail;   //더미 꼬리 
+int size;   //링크드 리스트 크기
