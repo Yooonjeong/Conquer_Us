@@ -39,7 +39,6 @@ void healing();             //배 체력 회복하는 함수
 void breakEffect(COORD pos);    //부숴지는 이펙트
 void goalEffect(COORD pos);    //부숴지는 이펙트
 void makeitem(int p);           //아이템 만드는 함수
-void updatePeople();    // 인구 수 업데이트 함수
 void showPeopleBar();     // 인구 비율 바 생성 함수
 void showVaccineBar();    // 백신 완성도 바 생성 함수
 void printPer();          // 바 옆 퍼센티지 출력 함수
@@ -53,12 +52,12 @@ void showStartScreen();         // 시작 화면 출력 함수
 void removeStartScreen();       // 시작 화면 삭제 함수
 void dieShip();             //배 죽이는 함수
 void itemUse();         //아이템 사용하는 함수
-void updateMapVirus();
+void updateMapVirus();      //바이러스 전파 맵에 업데이트
 void bloodRouteUpgrade();        // 감염경로 혈액 업그레이드 시
-void logIn(char ch[30]);
-int endCheck();
-void showEndingScreenWin();
-void showEndingScreenLose();
+void logIn(char ch[30]);        //화면 옆에 log
+int endCheck();     //게임 종료 체크
+void showEndingScreenWin();       //승리 화면 출력
+void showEndingScreenLose();        //패배 화면 출력
 
 /*백신 배 생성 링크드리스트 함수*/
 void InitList();                    //링크드 리스트 생성
@@ -331,7 +330,7 @@ void SummonVaccine(int type) {      //백신배 소환
     InsertAfter(PosSet, type, nowShip);
 }
 
-void ShowShip(SHIP* nowShip) {
+void ShowShip(SHIP* nowShip) {      //배를 보여주는 함수
     COORD curPos = GetCurrentCursorPos();
     AddShipInMap(nowShip);      //배를 바다에 생성
     switch (nowShip->type) {
@@ -351,7 +350,7 @@ void ShowShip(SHIP* nowShip) {
     SetCurrentCursorPos(curPos.X, curPos.Y);
 }
 
-void DeleteShip(SHIP* nowShip) {
+void DeleteShip(SHIP* nowShip) {        //배를 지우는 함수
     AddShipInMap(nowShip);      //배를 바다에서 없앰
     COORD curPos = GetCurrentCursorPos();
     Colorset(lightBlue, lightBlue);
@@ -405,7 +404,7 @@ void InsertAfter(int PosSet, int _type, SHIP* node) {
     ++size;                  //크기를 하나 늘려준다.
 }
 
-void VirusShipSpawn(SHIP* node) {
+void VirusShipSpawn(SHIP* node) {       //바이러스 배 스폰
     SHIP* newNode = (SHIP*)malloc(sizeof(SHIP));
     newNode->startPos.X = 2;
     newNode->startPos.Y = 2;
@@ -573,12 +572,6 @@ void ProcessKeyInput() {//키 입력받는 함수
         showBar();
         printPer();
         virusUp();
-        /*SetCurrentCursorPos(0, 0);
-        for (int i = 0; i < 5; i++) {
-            printf("%d ", mapVirus[0][i]);
-        }
-        printf("\n%d %d", infectedPeople, deadPeople);
-        */
         if (_kbhit() != 0) {
             key = _getch();
             switch (key) {
@@ -908,13 +901,6 @@ void ProcessKeyInput() {//키 입력받는 함수
                     }
                     else if (currentit == 4) { // 얻는 골드 획득량 영구적 증가
                         check = 1;
-                        /*if (itemList[4] > 0) {
-                            logIn("인질극을 사용하였습니다.");
-                            itemList[4] -= 1;
-                            itemwork[4] = 1;
-                            itemstart4 = vt.min;
-                            itemUse();
-                        }*/
                         logIn("인질극을 사용하였습니다.");
                         itemList[4] -= 1;
                         itemwork[4] = 1;
@@ -1175,7 +1161,7 @@ void ProcessKeyInput() {//키 입력받는 함수
     }
 }
 
-int detectCollision(int posX, int posY, SHIP* nowship) {
+int detectCollision(int posX, int posY, SHIP* nowship) {        //충돌 판정 확인함수
     int arrX = (posX) / 2; // arrX = posX / w
     int arrY = posY; // arrY = posY
     if (nowship->type <= 3) // 백신 배인 경우(0,1,2,3) (백신 배 추가되면 조건 바꿔줘야함)
@@ -1249,7 +1235,7 @@ int detectCollision(int posX, int posY, SHIP* nowship) {
             return 3;
     }
 }
-void itemUse() {
+void itemUse() {        //아이템 사용하는 함수
     if (itemwork[0] == 1) {
         SHIP* tmq = head->next;
         for (int k = 1; k < size; k++) {
@@ -1289,15 +1275,6 @@ void itemUse() {
             itemwork[4] = 0;
             goldUpitemusing = 0;
             goldUp = goldUporigin;
-            /*if (goldUp == 80) {
-                goldUp = 40;
-            }
-            else if (goldUp == 160) {
-                goldUp = 80;
-            }
-            else if (goldUp == 320) {
-                goldUp = 160;
-            }*/
         }
         else if (itemwork[4] == 1) {
             if (goldUpitemusing == 1) {
@@ -1314,7 +1291,7 @@ void itemUse() {
         }
     }
 }
-void AddShip() {
+void AddShip() {        //배 생성 함수
     SHIP* nowShip = head;
     for (int i = 0; i < size; i++) {
         nowShip = nowShip->next;
@@ -1324,7 +1301,7 @@ void AddShip() {
 
 }
 
-void AddShipInMap(SHIP* nowShip) {
+void AddShipInMap(SHIP* nowShip) {      //배 맵에 생성하는 함수
     if (World[nowShip->startPos.Y][nowShip->startPos.X / 2] == 5) {     //바다면
         World[nowShip->startPos.Y][nowShip->startPos.X / 2] = nowShip->type;     //type으로 바꿈
     }
@@ -1333,7 +1310,7 @@ void AddShipInMap(SHIP* nowShip) {
     }
 }
 
-void crashShip(SHIP* nowShip, SHIP* targetShip) // 충돌 시 파손도 감소, 백신배 체력 감소
+void crashShip(SHIP* nowShip, SHIP* targetShip) //배가 부딪힐때 // 충돌 시 파손도 감소, 백신배 체력 감소
 {
     nowShip->health -= targetShip->power;
     targetShip->health -= nowShip->power;
@@ -1344,7 +1321,7 @@ void crashShip(SHIP* nowShip, SHIP* targetShip) // 충돌 시 파손도 감소, 백신배 �
 SHIP* brokenShip(SHIP* nowShip) // 체력 없는 배 삭제, 침몰시 dropItem 함수 호출
 {
     SHIP* nextShip;
-    // 도착한 배는 goalCheck에서 삭제하면 될 것 같음
+    // 도착한 배는 goalCheck에서 삭제
     SetCurrentCursorPos(nowShip->startPos.X, nowShip->startPos.Y);
     DeleteShip(nowShip);
     if (nowShip->health <= 0) {
@@ -1370,7 +1347,7 @@ SHIP* brokenShip(SHIP* nowShip) // 체력 없는 배 삭제, 침몰시 dropItem 함수 호출
 
 void dropItem() // 배 부서졌을 시 확률적으로 아이템 drop
 {
-    int prob[5] = { 22, 22, 22, 12, 22 }; // 임시 확률(확률 전역변수로 올려줄까?)
+    int prob[5] = { 22, 22, 22, 12, 22 }; 
     int cumulativeProb[5] = { 22, 22, 22, 12, 22 };
     int chooseItem;
 
@@ -1396,7 +1373,7 @@ void dropItem() // 배 부서졌을 시 확률적으로 아이템 drop
         }
     }
 }
-void AddRoute(int push, SHIP* nowShip) {
+void AddRoute(int push, SHIP* nowShip) {        //부딪힌 후 루트 생성하는 함수
     if (nowShip->type != 4) {
         for (int i = sizeof(nowShip->moveRoute) / sizeof(int) - 1; i > nowShip->movecnt; i--) {
             nowShip->moveRoute[i] = nowShip->moveRoute[i - 1];
@@ -1404,7 +1381,7 @@ void AddRoute(int push, SHIP* nowShip) {
         nowShip->moveRoute[nowShip->movecnt] = push;
     }
 }
-int goalCheck(SHIP* nowShip) {
+int goalCheck(SHIP* nowShip) {      //적배가 목표지점에 들어왔을때 불리는 함수
     if (nowShip->move == 3) {
         if (nowShip->type == 2) return 0;
         logIn("적이 목표에 도달해 백신을 제작합니다.");
@@ -1413,7 +1390,7 @@ int goalCheck(SHIP* nowShip) {
     return 1;
 }
 
-void updateTime()
+void updateTime()       //시간 업데이트 함수
 {
     vt.min += 1;
     stage = vt.min / 5760;
@@ -1470,7 +1447,7 @@ void MakeShip() {                        //수리창 배 만들기 함수
     }
 }
 
-void TapBreakingShip() {
+void TapBreakingShip() {        //탭에서 배 모형 부수는 함수
     SHIP* nowShip = head->next;
     double brokenPer;
     int broken;
@@ -1498,7 +1475,7 @@ void TapBreakingShip() {
     MakeShip();
 }
 
-void ReBuildShip() {
+void ReBuildShip() {        //탭에서 배 모형 살리는 함수
     SHIP* nowShip = head->next;
     double rebuildPer = nowShip->health / (double)nowShip->maxhp * 100;
     int rebuilt = 121 * (rebuildPer / 100);
@@ -1516,7 +1493,7 @@ void ReBuildShip() {
     }
     MakeShip();
 }
-void healing() {
+void healing() {        //배 체력 회복하는 함수
     SHIP* nowShip = head->next;
     int incnt = 0;
     for (int i = -1; i <= 1; i++) {
@@ -1538,7 +1515,7 @@ void healing() {
     }
 }
 
-void breakEffect(COORD pos) {
+void breakEffect(COORD pos) {       //부숴지는 이펙트
     SetCurrentCursorPos(pos.X, pos.Y);
     Colorset(lightBlue, brightYellow);
     printf("*");
@@ -1556,7 +1533,7 @@ void breakEffect(COORD pos) {
     printf("■");
 }
 
-void goalEffect(COORD pos) {
+void goalEffect(COORD pos) {        //부숴지는 이펙트
     SetCurrentCursorPos(pos.X, pos.Y);
     Colorset(lightBlue, red);
     printf("ο");
@@ -1578,7 +1555,7 @@ void goalEffect(COORD pos) {
     printf("■");
 }
 
-void makeitem(int p) {
+void makeitem(int p) {      //아이템 만드는 함수
 
     COORD curPos = GetCurrentCursorPos();
     Colorset(white, red);
@@ -1606,19 +1583,14 @@ void makeitem(int p) {
         break;
     }
 }
-void updatePeople()
-{
-    // 추후에 바이러스 전파 완료 후 반영 예정
 
-}
-
-void showBar()            // Bar 통합
+void showBar()            // Bar 통합 출력
 {
     showPeopleBar();
     showVaccineBar();
 }
 
-void showPeopleBar()
+void showPeopleBar()        // 인구 비율 바 생성 함수
 {
     updateBar();
     COORD curPos = { 0,0 };
@@ -1637,7 +1609,7 @@ void showPeopleBar()
     }
 }
 
-void showVaccineBar()
+void showVaccineBar()       // 백신 완성도 바 생성 함수
 {
     updateBar();
     COORD curPos = { 0,1 };
@@ -1656,7 +1628,7 @@ void showVaccineBar()
     }
 }
 
-void printPer()
+void printPer()     // 바 옆 퍼센티지 출력 함수
 {
     Colorset(black, green);
     SetCurrentCursorPos(104, 0);
@@ -1666,7 +1638,7 @@ void printPer()
     printf("%d%% 백신완성도", vaccinePer);
 }
 
-void updateBar()
+void updateBar()        // 바 업데이트 함수
 {
     for (int i = 0; i < vaccinePer / 2 - 1; i++)
         vaccineMaturity[0][i] = 1;
@@ -1678,7 +1650,7 @@ void updateBar()
 
 }
 
-void updateMap() {
+void updateMap() {      //감염도에 따라 맵 업데이트하는 함수
     for (int i = 0; i < 30; i++) {
         for (int j = 0; j < 16; j++) {
             if (NorthAmerica[j][i] == 3) {
@@ -1765,7 +1737,7 @@ void updateMap() {
 
 }
 
-void virusUpCal(int i, int j, int maxPeople) {
+void virusUpCal(int i, int j, int maxPeople) {      //감염도 계산
     int plusDiff; //mapVirus에 추가할 양
     int k = mapVirus[0][i] / 5;
     int total = mapVirus[0][0] + mapVirus[0][1] + mapVirus[0][2] + mapVirus[0][3] + mapVirus[0][4];
@@ -1907,15 +1879,12 @@ void virusUpCal(int i, int j, int maxPeople) {
     infectedPeople = ((double)(mapVirus[0][0] + mapVirus[0][1] + mapVirus[0][2] + mapVirus[0][3] + mapVirus[0][4]) / allMap) * totalPeople; // 감염자수 계산
     if (virusUpCnt > 2) { // 두 번째 업데이트부터 사망자수 생김
         deadPeople = ((double)(((double)(vt.fatality[i] + 1) / 6 * total)) / allMap) * totalPeople; // 사망자수 계산
-        //deadPeople += ((double)(((double)(vt.fatality[i] + 1) / 5 * plusDiff)) / allMap) * totalPeople; // 사망자수 계산
-        //infectedPeople -= ((double)(((double)(vt.fatality[i] + 1) / 6 * total)) / allMap) * totalPeople; // 감염자수에서 사망자수 제외
     }
 
 }
 
 
-void virusUp() {
-    // 30초마다 업데이트로 해놓음 수정하쟈
+void virusUp() {        //감염도 올림
     if (virusUpCheck == 1) {
         if (currentWaterLv == 0) {
             if (infectedPeople == 0) {
@@ -2000,13 +1969,13 @@ void virusUp() {
 }
 
 
-void breakPlayer() {
+void breakPlayer() {        //플레이어 체력 0일때 없애는 함수
     logIn("플레이어 배가 파괴되었습니다.");
     logIn("20분 후 재생성됩니다.");
     die = 1;
     dieTime = vt.min;
 }
-void showStartScreen()
+void showStartScreen()      // 시작 화면 출력 함수
 {
     COORD curPos = { 5,10 };
 
@@ -2028,7 +1997,7 @@ void showStartScreen()
         }
     }
 }
-void removeStartScreen() {
+void removeStartScreen() {      // 시작 화면 삭제 함수
     COORD curPos = { 5,10 };
     Colorset(black, white);
     for (int i = 1; i < LOGO_HEIGHT - 1; i++) {
@@ -2041,7 +2010,7 @@ void removeStartScreen() {
     printf("                            ");
 }
 
-void dieShip() {
+void dieShip() {        //배 죽이는 함수
     if (die == 1 && vt.min >= dieTime + 100) {
         SetCurrentCursorPos(96, 47);
         Colorset(black, white);
@@ -2069,7 +2038,7 @@ void dieShip() {
     }
 }
 
-void updateMapVirus() {
+void updateMapVirus() {     //바이러스 전파 맵에 업데이트
     for (int i = 0; i < rt.water + 1; i++) {
         int infec = mapVirus[0][i];
         switch (i) {
@@ -2148,7 +2117,7 @@ void updateMapVirus() {
     updateMap();
 }
 
-void bloodRouteUpgrade() {
+void bloodRouteUpgrade() {      // 감염경로 혈액 업그레이드 시
     int temp = rand() % 2;
     if (temp == 0) {
         vt.fatality[currentWaterLv] = 0; // 현재 업그레이드 중인 대륙들에 대한 치사율 0단계로
@@ -2161,7 +2130,7 @@ void bloodRouteUpgrade() {
     }
 }
 
-void logIn(char ch[30]) {
+void logIn(char ch[30]) {       //화면 옆에 log
     if (logcnt < 20) {
         strcpy(log[logcnt], ch);
         logcnt++;
@@ -2175,7 +2144,7 @@ void logIn(char ch[30]) {
     }
 }
 
-int endCheck() {
+int endCheck() {        //게임 종료 체크
     if (deadPeople >= totalPeople / 2) {
         return 1;
     }
@@ -2185,7 +2154,7 @@ int endCheck() {
     return 0;
 }
 
-void showEndingScreenWin()
+void showEndingScreenWin()      //승리 화면 출력
 {
     COORD curPos = { 5,12 };
     Colorset(black, white);
@@ -2209,7 +2178,7 @@ void showEndingScreenWin()
     Colorset(black, white);
 }
 
-void showEndingScreenLose()
+void showEndingScreenLose()         //패배 화면 출력
 {
     COORD curPos = { 5,12 };
     Colorset(black, white);
