@@ -1,7 +1,40 @@
 ﻿  main.c
-  makeTap.c
-C:\Users\wkddb\OneDrive\바탕 화면\Conquer_Us\Conquer_Us\Conquer_Us\makeTap.c(5,24): warning C4013: 'SetCurrentCursorPos'이(가) 정의되지 않았습니다. extern은 int형을 반환하는 것으로 간주합니다.
-C:\Users\wkddb\OneDrive\바탕 화면\Conquer_Us\Conquer_Us\Conquer_Us\makeTap.c(6,13): warning C4013: 'Colorset'이(가) 정의되지 않았습니다. extern은 int형을 반환하는 것으로 간주합니다.
-  코드를 생성하고 있습니다...
+C:\Users\wkddb\OneDrive\바탕 화면\Conquer_Us\Conquer_Us\Conquer_Us\main.c(223,21): warning C4098: 'main': 'void' 함수에서 값을 반환하고 있습니다.
+C:\Users\wkddb\OneDrive\바탕 화면\Conquer_Us\Conquer_Us\Conquer_Us\main.c(225,21): warning C4098: 'main': 'void' 함수에서 값을 반환하고 있습니다.
+C:\Users\wkddb\OneDrive\바탕 화면\Conquer_Us\Conquer_Us\Conquer_Us\main.c(227,17): warning C4098: 'main': 'void' 함수에서 값을 반환하고 있습니다.
+C:\Users\wkddb\OneDrive\바탕 화면\Conquer_Us\Conquer_Us\Conquer_Us\main.c(1514,57): warning C4244: '=': 'double'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\wkddb\OneDrive\바탕 화면\Conquer_Us\Conquer_Us\Conquer_Us\main.c(1615,148): warning C4244: '=': 'double'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\wkddb\OneDrive\바탕 화면\Conquer_Us\Conquer_Us\Conquer_Us\main.c(1619,146): warning C4244: '=': 'double'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\wkddb\OneDrive\바탕 화면\Conquer_Us\Conquer_Us\Conquer_Us\main.c(1622,146): warning C4244: '=': 'double'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\wkddb\OneDrive\바탕 화면\Conquer_Us\Conquer_Us\Conquer_Us\main.c(1625,146): warning C4244: '=': 'double'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\wkddb\OneDrive\바탕 화면\Conquer_Us\Conquer_Us\Conquer_Us\main.c(1632,151): warning C4244: '=': 'double'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\wkddb\OneDrive\바탕 화면\Conquer_Us\Conquer_Us\Conquer_Us\main.c(1635,151): warning C4244: '=': 'double'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\wkddb\OneDrive\바탕 화면\Conquer_Us\Conquer_Us\Conquer_Us\main.c(1640,157): warning C4244: '=': 'double'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\wkddb\OneDrive\바탕 화면\Conquer_Us\Conquer_Us\Conquer_Us\main.c(1643,157): warning C4244: '=': 'double'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\wkddb\OneDrive\바탕 화면\Conquer_Us\Conquer_Us\Conquer_Us\main.c(1647,153): warning C4244: '=': 'double'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\wkddb\OneDrive\바탕 화면\Conquer_Us\Conquer_Us\Conquer_Us\main.c(1652,152): warning C4244: '=': 'double'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\wkddb\OneDrive\바탕 화면\Conquer_Us\Conquer_Us\Conquer_Us\main.c(1656,151): warning C4244: '=': 'double'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\wkddb\OneDrive\바탕 화면\Conquer_Us\Conquer_Us\Conquer_Us\main.c(1659,151): warning C4244: '=': 'double'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\wkddb\OneDrive\바탕 화면\Conquer_Us\Conquer_Us\Conquer_Us\main.c(1664,151): warning C4244: '=': 'double'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\wkddb\OneDrive\바탕 화면\Conquer_Us\Conquer_Us\Conquer_Us\main.c(1667,151): warning C4244: '=': 'double'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\wkddb\OneDrive\바탕 화면\Conquer_Us\Conquer_Us\Conquer_Us\main.c(1672,151): warning C4244: '=': 'double'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\wkddb\OneDrive\바탕 화면\Conquer_Us\Conquer_Us\Conquer_Us\main.c(1675,151): warning C4244: '=': 'double'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\wkddb\OneDrive\바탕 화면\Conquer_Us\Conquer_Us\Conquer_Us\main.c(1682,151): warning C4244: '=': 'double'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\wkddb\OneDrive\바탕 화면\Conquer_Us\Conquer_Us\Conquer_Us\main.c(1685,151): warning C4244: '=': 'double'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\wkddb\OneDrive\바탕 화면\Conquer_Us\Conquer_Us\Conquer_Us\main.c(1690,151): warning C4244: '=': 'double'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\wkddb\OneDrive\바탕 화면\Conquer_Us\Conquer_Us\Conquer_Us\main.c(1693,151): warning C4244: '=': 'double'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\wkddb\OneDrive\바탕 화면\Conquer_Us\Conquer_Us\Conquer_Us\main.c(1698,151): warning C4244: '=': 'double'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\wkddb\OneDrive\바탕 화면\Conquer_Us\Conquer_Us\Conquer_Us\main.c(1701,151): warning C4244: '=': 'double'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\wkddb\OneDrive\바탕 화면\Conquer_Us\Conquer_Us\Conquer_Us\main.c(1706,151): warning C4244: '=': 'double'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\wkddb\OneDrive\바탕 화면\Conquer_Us\Conquer_Us\Conquer_Us\main.c(1709,151): warning C4244: '=': 'double'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\wkddb\OneDrive\바탕 화면\Conquer_Us\Conquer_Us\Conquer_Us\main.c(1715,147): warning C4244: '=': 'double'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\wkddb\OneDrive\바탕 화면\Conquer_Us\Conquer_Us\Conquer_Us\main.c(1718,147): warning C4244: '=': 'double'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\wkddb\OneDrive\바탕 화면\Conquer_Us\Conquer_Us\Conquer_Us\main.c(1721,147): warning C4244: '=': 'double'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\wkddb\OneDrive\바탕 화면\Conquer_Us\Conquer_Us\Conquer_Us\main.c(1725,151): warning C4244: '=': 'double'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\wkddb\OneDrive\바탕 화면\Conquer_Us\Conquer_Us\Conquer_Us\main.c(1728,151): warning C4244: '=': 'double'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\wkddb\OneDrive\바탕 화면\Conquer_Us\Conquer_Us\Conquer_Us\main.c(1733,151): warning C4244: '=': 'double'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\wkddb\OneDrive\바탕 화면\Conquer_Us\Conquer_Us\Conquer_Us\main.c(1736,151): warning C4244: '=': 'double'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\wkddb\OneDrive\바탕 화면\Conquer_Us\Conquer_Us\Conquer_Us\main.c(1747,139): warning C4244: '=': 'double'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\wkddb\OneDrive\바탕 화면\Conquer_Us\Conquer_Us\Conquer_Us\main.c(1749,99): warning C4244: '=': 'double'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
   LINK : C:\Users\wkddb\OneDrive\바탕 화면\Conquer_Us\Conquer_Us\Debug\Conquer_Us.exe을(를) 찾을 수 없거나 마지막 증분 링크에 의해 빌드되지 않았습니다. 전체 링크를 수행하고 있습니다.
   Conquer_Us.vcxproj -> C:\Users\wkddb\OneDrive\바탕 화면\Conquer_Us\Conquer_Us\Debug\Conquer_Us.exe

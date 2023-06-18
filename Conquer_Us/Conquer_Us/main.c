@@ -36,6 +36,7 @@ void healing();             //배 체력 회복하는 함수
 void breakEffect(COORD pos);    //부숴지는 이펙트
 void goalEffect(COORD pos);    //부숴지는 이펙트
 void makeitem(int p);           //아이템 만드는 함수
+void showPeopleBar();     // 인구 비율 바 생성 함수
 void showVaccineBar();      //백신 완성도 바 생성 함수
 void printPer();        //바 옆 퍼센티지 출력 함수
 void showBar();     //바 통합 출력
@@ -1453,7 +1454,27 @@ void makeitem(int p) {
 }
 void showBar()            // Bar 통합
 {
+    showPeopleBar();
     showVaccineBar();
+}
+
+void showPeopleBar()
+{
+    updateBar();
+    COORD curPos = { 0,0 };
+    for (int i = 0; i < BAR_WIDTH - 1; i++)
+    {
+        SetCurrentCursorPos(curPos.X + (i + 1) * 2, curPos.Y);
+        if (population[0][i] == 0) {
+            Colorset(black, white);
+            printf("  ");
+        }
+        else if (population[0][i] == 1)
+        {
+            Colorset(brightRed, brightRed);
+            printf("■");
+        }
+    }
 }
 
 void showVaccineBar()
@@ -1477,6 +1498,9 @@ void showVaccineBar()
 
 void printPer()
 {
+    Colorset(black, green);
+    SetCurrentCursorPos(104, 0);
+    printf("%d%% 사망비율", peoplePer);
     Colorset(black, red);
     SetCurrentCursorPos(104, 1);
     printf("%d%% 백신완성도", vaccinePer);
@@ -1486,6 +1510,11 @@ void updateBar()
 {
     for (int i = 0; i < vaccinePer / 2 - 1; i++)
         vaccineMaturity[0][i] = 1;
+
+    peoplePer = ((double)deadPeople / totalPeople) * 100;
+
+    for (int i = 0; i < peoplePer / 2 - 1; i++)
+        population[0][i] = 1;
 
 }
 
