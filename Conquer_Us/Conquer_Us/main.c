@@ -2,11 +2,14 @@
 #include <Windows.h>
 #include <time.h>
 #include <string.h>
+#include <mmsystem.h> // bgm
+#include <Digitalv.h> // bgm
 #include "data.h"
 #include "worldmap.h"
 #include "makeTap.h"
 
 #pragma warning(disable:4996)
+#pragma comment(lib, "winmm.lib") // bgm
 
 #define WORLD_WIDTH 77      //맵의 크기
 #define WORLD_HEIGHT 39      //맵의 높이
@@ -58,6 +61,17 @@ void logIn(char ch[30]);        //화면 옆에 log
 int endCheck();     //게임 종료 체크
 void showEndingScreenWin();       //승리 화면 출력
 void showEndingScreenLose();        //패배 화면 출력
+
+/*bgm 관련 함수*/
+
+void MainSound(int bgmFlag); // bgmFlag == 0일 때(재생 신호시) 재생
+void playSoundBreak(); // 배 부서지는 효과음
+void playSoundItem(); // 아이템 먹는 효과음
+void playSoundCollision(); // virus ship collision 시
+void playSoundSinking(); // virus ship 파손 (loading)
+void playSoundHealing(); // healing 효과음
+void playSoundWarning(); // warning 효과음 (배 등장, 혹은 스테이지 up)
+void playSoundLog(); // Log 효과음
 
 /*백신 배 생성 링크드리스트 함수*/
 void InitList();                    //링크드 리스트 생성
@@ -177,13 +191,11 @@ int goldUporigin;
 void main()
 {
     vt.gold = 1000;
-    //vt.min += 14300;
-    //vt.health = 0; // 임시
     system("mode con cols=200 lines=60");      //콘솔 크기 조정
     SetConsoleTitle(TEXT("Conqure Us"));        //콘솔 이름 설정
     while (_kbhit() == 0)
     {
-        showStartScreen(); // 임시로 press any key
+        showStartScreen();
         Colorset(black, white);
         SetCurrentCursorPos(82, 40);
         printf("///PRESS ANY KEY TO START///");
@@ -206,6 +218,8 @@ void main()
     int cnt = 0;
     logIn("게임이 시작되었습니다.");
     logIn("---------------- STAGE: 1----------------");
+
+    PlaySound(TEXT("Mainbgm.wav"), NULL, SND_ASYNC | SND_LOOP);
 
     while (nowstage < 4) {// 원래 4인데 임시
         while (nowstage == stage) {
@@ -2157,6 +2171,7 @@ int endCheck() {        //게임 종료 체크
 void showEndingScreenWin()      //승리 화면 출력
 {
     COORD curPos = { 5,12 };
+    PlaySound(TEXT("Gamewin.wav"), NULL, SND_ASYNC);
     Colorset(black, white);
     for (int i = 1; i < 25 - 1; i++) {
         for (int j = 1; j < 95 - 1; j++) {
@@ -2181,6 +2196,7 @@ void showEndingScreenWin()      //승리 화면 출력
 void showEndingScreenLose()         //패배 화면 출력
 {
     COORD curPos = { 5,12 };
+    PlaySound(TEXT("Gamelose.wav"), NULL, SND_ASYNC);
     Colorset(black, white);
     for (int i = 1; i < 25 - 1; i++) {
         for (int j = 1; j < 95 - 1; j++) {
