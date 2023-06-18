@@ -40,9 +40,13 @@ void showVaccineBar();      //백신 완성도 바 생성 함수
 void printPer();        //바 옆 퍼센티지 출력 함수
 void showBar();     //바 통합 출력
 void updateBar();       //바 업데이트 함수
+void updateMap();           //감염도에 따라 맵 업데이트하는 함수
+void virusUpCal(int i, int j, int maxPeople);       //감염도 계산
+void virusUp();             //감염도 올림
 void breakPlayer();         //플레이어 체력 0일때 없애는 함수
 void dieShip();             //배 죽이는 함수
 void itemUse();         //아이템 사용하는 함수
+void updateMapVirus();      //바이러스 맵에 업데이트
 void bloodRouteUpgrade();       //감염경로 혈액 업그레이드 시
 int endCheck();
 
@@ -210,6 +214,16 @@ void main()
                 }
                 dieShip();
                 itemUse();
+            }
+            SetCurrentCursorPos(0, 0);
+            updateMap();
+            if (endCheck() > 0) {
+                if (endCheck() == 1)
+                    return 0;
+                else
+                    return 0;
+                getchar();
+                return 0;
             }
         }
         nowstage++;
@@ -523,6 +537,7 @@ void ProcessKeyInput() {//키 입력받는 함수
         updateTime();
         showBar();
         printPer();
+        virusUp();
         if (_kbhit() != 0) {
             key = _getch();
             switch (key) {
@@ -1474,6 +1489,326 @@ void updateBar()
 
 }
 
+void updateMap() {      //감염도에 따라 맵 업데이트하는 함수
+    for (int i = 0; i < 30; i++) {
+        for (int j = 0; j < 16; j++) {
+            if (NorthAmerica[j][i] == 3) {
+                SetCurrentCursorPos((6 + i) * 2, 4 + j);
+                Colorset(green, red);
+                printf("■");
+
+            }
+            else if (NorthAmerica[j][i] == 4) {
+                SetCurrentCursorPos((6 + i) * 2, 4 + j);
+                Colorset(Orange, red);
+                printf("■");
+
+            }
+        }
+    }
+
+    for (int i = 0; i < 15; i++) {
+        for (int j = 0; j < 16; j++) {
+            if (SouthAmerica[j][i] == 3) {
+                SetCurrentCursorPos((16 + i) * 2, 20 + j);
+                Colorset(green, red);
+                printf("■");
+
+            }
+            else if (SouthAmerica[j][i] == 4) {
+                SetCurrentCursorPos((16 + i) * 2, 20 + j);
+                Colorset(Orange, red);
+                printf("■");
+
+            }
+        }
+    }
+
+    for (int i = 0; i < 39; i++) {
+        for (int j = 0; j < 21; j++) {
+            if (EuAsia[j][i] == 3) {
+                SetCurrentCursorPos((32 + i) * 2, 6 + j);
+                Colorset(green, red);
+                printf("■");
+
+            }
+            else if (EuAsia[j][i] == 4) {
+                SetCurrentCursorPos((32 + i) * 2, 6 + j);
+                Colorset(Orange, red);
+                printf("■");
+
+            }
+        }
+    }
+    for (int i = 0; i < 14; i++) {
+        for (int j = 0; j < 15; j++) {
+            if (Africa[j][i] == 3) {
+                SetCurrentCursorPos((34 + i) * 2, 17 + j);
+                Colorset(green, red);
+                printf("■");
+
+            }
+            else if (Africa[j][i] == 4) {
+                SetCurrentCursorPos((34 + i) * 2, 17 + j);
+                Colorset(Orange, red);
+                printf("■");
+
+            }
+        }
+    }
+
+    for (int i = 0; i < 8; i++) {
+        for (int j = 0; j < 12; j++) {
+            if (Oceania[j][i] == 3) {
+                SetCurrentCursorPos((57 + i) * 2, 21 + j);
+                Colorset(green, red);
+                printf("■");
+
+            }
+            else if (Oceania[j][i] == 4) {
+                SetCurrentCursorPos((57 + i) * 2, 21 + j);
+                Colorset(Orange, red);
+                printf("■");
+
+            }
+        }
+    }
+
+}
+
+void virusUpCal(int i, int j, int maxPeople) {      //감염도 계산
+    int plusDiff; //mapVirus에 추가할 양
+    int k = mapVirus[0][i] / 5;
+    int total = mapVirus[0][0] + mapVirus[0][1] + mapVirus[0][2] + mapVirus[0][3] + mapVirus[0][4];
+    switch (i) {
+    case 0:
+        if (j > 1) {
+            plusDiff = ((double)mapVirus[0][i] / maxPeople) * infectedPeople * (4 + (vt.propagation[i]) * 2) * ((double)1 / (deadPeople + 1)) / (j); //수정
+        }
+        else {
+            if (mapVirus[0][i] < 6) {
+                plusDiff = ((double)mapVirus[0][i] / maxPeople) * infectedPeople * (4 + (vt.propagation[i]) * 2) * ((double)1 / (deadPeople + 1)); //수정
+            }
+            else if (mapVirus[0][i] < 19) {
+                plusDiff = ((double)mapVirus[0][i] / maxPeople) * infectedPeople * (2 + (vt.propagation[i]) * 2) * ((double)1 / (deadPeople + 1)); //수정
+            }
+            else {
+                plusDiff = ((double)mapVirus[0][i] / maxPeople) * infectedPeople * (1 + (vt.propagation[i]) * 2) * ((double)1 / (deadPeople + 1)); //수정
+            }
+        }
+        break;
+    case 1:
+        if (total < 10) {
+            if (vt.fatality == 0) {
+                plusDiff = ((double)mapVirus[0][i] / maxPeople) * infectedPeople * (15 + vt.propagation[i]) * ((double)1 / (deadPeople + 1) / (k + 1)); //수정 //50
+            }
+            else {
+                plusDiff = ((double)mapVirus[0][i] / maxPeople) * infectedPeople * (18 + vt.propagation[i]) * ((double)1 / (deadPeople + 1) / (k + 1)); //수정 //50
+            }
+        }
+        else if (total < 100) {
+            if (vt.fatality == 0) {
+                plusDiff = ((double)mapVirus[0][i] / maxPeople) * infectedPeople * (15 + (vt.propagation[i]) * 2) * ((double)1 / (deadPeople + 1) / (k + 1)); //수정 //15
+            }
+            else {
+                plusDiff = ((double)mapVirus[0][i] / maxPeople) * infectedPeople * (30 + (vt.propagation[i]) * 2) * ((double)1 / (deadPeople + 1) / (k + 1)); //수정 //15
+            }
+        }
+        else {
+            plusDiff = ((double)mapVirus[0][i] / maxPeople) * infectedPeople * (30 + (vt.propagation[i]) * 2) * ((double)1 / (deadPeople + 1) / (k + 1)); //수정 //20
+        }
+        break;
+    case 2:
+        if (total < 10) {
+            plusDiff = ((double)mapVirus[0][i] / maxPeople) * infectedPeople * (9 + (vt.propagation[i]) * 2) * ((double)1 / (deadPeople + 1) / (k + 1)); //수정 //9
+        }
+        else if (total < 60) {
+            if (vt.fatality == 0) {
+                plusDiff = ((double)mapVirus[0][i] / maxPeople) * infectedPeople * (13 + vt.propagation[i]) * ((double)1 / (deadPeople + 1) / (k + 1)); //수정 //50
+            }
+            else {
+                plusDiff = ((double)mapVirus[0][i] / maxPeople) * infectedPeople * (15 + vt.propagation[i]) * ((double)1 / (deadPeople + 1) / (k + 1)); //수정 //50
+            }
+        }
+        else if (total < 100) {
+            if (vt.fatality == 0) {
+                plusDiff = ((double)mapVirus[0][i] / maxPeople) * infectedPeople * (15 + vt.propagation[i]) * ((double)1 / (deadPeople + 1) / (k + 1)); //수정 //50
+            }
+            else {
+                plusDiff = ((double)mapVirus[0][i] / maxPeople) * infectedPeople * (18 + vt.propagation[i]) * ((double)1 / (deadPeople + 1) / (k + 1)); //수정 //50
+            }
+        }
+        else {
+            if (vt.fatality == 0) {
+                plusDiff = ((double)mapVirus[0][i] / maxPeople) * infectedPeople * (23 + vt.propagation[i]) * ((double)1 / (deadPeople + 1) / (k + 1)); //수정 //50
+            }
+            else {
+                plusDiff = ((double)mapVirus[0][i] / maxPeople) * infectedPeople * (28 + vt.propagation[i]) * ((double)1 / (deadPeople + 1) / (k + 1)); //수정 //50
+            }
+        }
+        break;
+    case 3:
+        if (total < 10) {
+            if (vt.fatality == 0) {
+                plusDiff = ((double)mapVirus[0][i] / maxPeople) * infectedPeople * (22 + vt.propagation[i]) * ((double)1 / (deadPeople + 1) / (k + 1)); //수정 //50
+            }
+            else {
+                plusDiff = ((double)mapVirus[0][i] / maxPeople) * infectedPeople * (25 + vt.propagation[i]) * ((double)1 / (deadPeople + 1) / (k + 1)); //수정 //50
+            }
+        }
+        else if (total < 100) {
+            if (vt.fatality == 0) {
+                plusDiff = ((double)mapVirus[0][i] / maxPeople) * infectedPeople * (28 + vt.propagation[i]) * ((double)1 / (deadPeople + 1) / (k + 1)); //수정 //50
+            }
+            else {
+                plusDiff = ((double)mapVirus[0][i] / maxPeople) * infectedPeople * (30 + vt.propagation[i]) * ((double)1 / (deadPeople + 1) / (k + 1)); //수정 //50
+            }
+        }
+        else if (total < 300) {
+            if (vt.fatality == 0) {
+                plusDiff = ((double)mapVirus[0][i] / maxPeople) * infectedPeople * (45 + vt.propagation[i]) * ((double)1 / (deadPeople + 1) / (k + 1)); //수정 //50
+            }
+            else {
+                plusDiff = ((double)mapVirus[0][i] / maxPeople) * infectedPeople * (55 + vt.propagation[i]) * ((double)1 / (deadPeople + 1) / (k + 1)); //수정 //50
+            }
+        }
+        else {
+            if (vt.fatality == 0) {
+                plusDiff = ((double)mapVirus[0][i] / maxPeople) * infectedPeople * (50 + vt.propagation[i]) * ((double)1 / (deadPeople + 1) / (k + 1)); //수정 //50
+            }
+            else {
+                plusDiff = ((double)mapVirus[0][i] / maxPeople) * infectedPeople * (58 + vt.propagation[i]) * ((double)1 / (deadPeople + 1) / (k + 1)); //수정 //50
+            }
+        }
+        break;
+    case 4:
+        if (total < 10) {
+            plusDiff = ((double)mapVirus[0][i] / maxPeople) * infectedPeople * (23 + vt.propagation[i]) * ((double)1 / (deadPeople + 1) / (k + 1)); //수정 //25
+        }
+        else if (total < 100) {
+            plusDiff = ((double)mapVirus[0][i] / maxPeople) * infectedPeople * (28 + vt.propagation[i]) * ((double)1 / (deadPeople + 1) / (k + 1)); //수정 //30
+        }
+        else if (total < 300) {
+            plusDiff = ((double)mapVirus[0][i] / maxPeople) * infectedPeople * (42 + vt.propagation[i]) * ((double)1 / (deadPeople + 1) / (k + 1)); //수정 //45
+        }
+        else if (total < allMap - mapVirus[1][i]) {
+            if (vt.fatality == 0) {
+                plusDiff = ((double)mapVirus[0][i] / maxPeople) * infectedPeople * (60 + vt.propagation[i]) * ((double)1 / (deadPeople + 1) / (k + 1)); //수정 //50
+            }
+            else {
+                plusDiff = ((double)mapVirus[0][i] / maxPeople) * infectedPeople * (67 + vt.propagation[i]) * ((double)1 / (deadPeople + 1) / (k + 1)); //수정 //50
+            }
+        }
+        else {
+            if (vt.fatality == 0) {
+                plusDiff = ((double)mapVirus[0][i] / maxPeople) * infectedPeople * (67 + vt.propagation[i]) * ((double)1 / (deadPeople + 1) / (k + 1)); //수정 //50
+            }
+            else {
+                plusDiff = ((double)mapVirus[0][i] / maxPeople) * infectedPeople * (72 + vt.propagation[i]) * ((double)1 / (deadPeople + 1) / (k + 1)); //수정 //50
+            }
+        }
+        break;
+    }
+    // 각 대륙에서의 전염률(■ 비율) / 현재 감염자수 / 바이러스탭에서의 전파력 강화 / 사망자수(반비례) // 반영
+    mapVirus[0][i] += (int)plusDiff; // 배열에 추가
+    if (mapVirus[0][i] >= maxPeople) { // 배열 최대 수 도달한 경우
+        mapVirus[0][i] = maxPeople;
+        plusDiff = (maxPeople - (mapVirus[0][i] - plusDiff));
+    }
+    infectedPeople = ((double)(mapVirus[0][0] + mapVirus[0][1] + mapVirus[0][2] + mapVirus[0][3] + mapVirus[0][4]) / allMap) * totalPeople; // 감염자수 계산
+    if (virusUpCnt > 2) { // 두 번째 업데이트부터 사망자수 생김
+        deadPeople = ((double)(((double)(vt.fatality[i] + 1) / 6 * total)) / allMap) * totalPeople; // 사망자수 계산
+        //deadPeople += ((double)(((double)(vt.fatality[i] + 1) / 5 * plusDiff)) / allMap) * totalPeople; // 사망자수 계산
+        //infectedPeople -= ((double)(((double)(vt.fatality[i] + 1) / 6 * total)) / allMap) * totalPeople; // 감염자수에서 사망자수 제외
+    }
+
+}
+
+
+void virusUp() {        //감염도 올림
+    if (virusUpCheck == 1) {
+        if (currentWaterLv == 0) {
+            if (infectedPeople == 0) {
+                infectedPeople = 12; // (1/allmap)*totalPeople = 12
+                mapVirus[0][0] = 1;
+            }
+            if (mapVirus[0][0] == 0) { mapVirus[0][0] = 1; }
+            if (mapVirus[0][0] == 43) { virusUpCheck = 0; return; }
+            virusUpCal(0, 1, 43);
+            virusUpCheck = 0;
+        }
+        else if (currentWaterLv == 1) {
+            if (infectedPeople == 0) {
+                infectedPeople = 12;
+                mapVirus[0][0] = 1;
+                mapVirus[0][1] = 1;
+            }
+            if (mapVirus[0][0] == 0) { mapVirus[0][0] = 1; }
+            if (mapVirus[0][1] == 0) { mapVirus[0][1] = 1; }
+            if (mapVirus[0][0] != 43) { virusUpCal(0, 2, 43); }
+            if (mapVirus[0][1] != 98) { virusUpCal(1, 2, 98); }
+            virusUpCheck = 0;
+        }
+        else if (currentWaterLv == 2) {
+            if (infectedPeople == 0) {
+                infectedPeople = 12;
+                mapVirus[0][0] = 1;
+                mapVirus[0][1] = 1;
+                mapVirus[0][2] = 1;
+            }
+            if (mapVirus[0][0] == 0) { mapVirus[0][0] = 1; }
+            if (mapVirus[0][1] == 0) { mapVirus[0][1] = 1; }
+            if (mapVirus[0][2] == 0) { mapVirus[0][2] = 1; }
+            if (mapVirus[0][0] != 43) { virusUpCal(0, 2, 43); }
+            if (mapVirus[0][1] != 98) { virusUpCal(1, 2, 98); }
+            if (mapVirus[0][2] != 74) { virusUpCal(2, 3, 74); }
+            virusUpCheck = 0;
+        }
+        else if (currentWaterLv == 3) {
+            if (infectedPeople == 0) {
+                infectedPeople = 12;
+                mapVirus[0][0] = 1;
+                mapVirus[0][1] = 1;
+                mapVirus[0][2] = 1;
+                mapVirus[0][3] = 1;
+            }
+            if (mapVirus[0][0] == 0) { mapVirus[0][0] = 1; }
+            if (mapVirus[0][1] == 0) { mapVirus[0][1] = 1; }
+            if (mapVirus[0][2] == 0) { mapVirus[0][2] = 1; }
+            if (mapVirus[0][3] == 0) { mapVirus[0][3] = 1; }
+            if (mapVirus[0][0] != 43) { virusUpCal(0, 4, 43); }
+            if (mapVirus[0][1] != 98) { virusUpCal(1, 2, 98); }
+            if (mapVirus[0][2] != 74) { virusUpCal(2, 3, 74); }
+            if (mapVirus[0][3] != 241) { virusUpCal(3, 4, 241); }
+            virusUpCheck = 0;
+        }
+        else if (currentWaterLv == 4) {
+            if (infectedPeople == 0) {
+                infectedPeople = 12;
+                mapVirus[0][0] = 1;
+                mapVirus[0][1] = 1;
+                mapVirus[0][2] = 1;
+                mapVirus[0][3] = 1;
+                mapVirus[0][4] = 1;
+            }
+            if (mapVirus[0][0] == 0) { mapVirus[0][0] = 1; }
+            if (mapVirus[0][1] == 0) { mapVirus[0][1] = 1; }
+            if (mapVirus[0][2] == 0) { mapVirus[0][2] = 1; }
+            if (mapVirus[0][3] == 0) { mapVirus[0][3] = 1; }
+            if (mapVirus[0][4] == 0) { mapVirus[0][4] = 1; }
+            if (mapVirus[0][0] != 43) { virusUpCal(0, 5, 43); }
+            if (mapVirus[0][1] != 98) { virusUpCal(1, 2, 98); }
+            if (mapVirus[0][2] != 74) { virusUpCal(2, 3, 74); }
+            if (mapVirus[0][3] != 241) { virusUpCal(3, 4, 241); }
+            if (mapVirus[0][4] != 366) { virusUpCal(4, 5, 366); }
+            virusUpCheck = 0;
+        }
+        updateMapVirus();
+        return;
+    }
+    else { return; }
+}
+
 void breakPlayer() {
     die = 1;
     dieTime = vt.min;
@@ -1495,6 +1830,85 @@ void dieShip() {
             World[head->next->startPos.Y][head->next->startPos.X / 2] = 5;     //type으로 바꿈
         }
     }
+}
+
+void updateMapVirus() {         //바이러스 맵에 업데이트
+    for (int i = 0; i < rt.water + 1; i++) {
+        int infec = mapVirus[0][i];
+        switch (i) {
+        case 0:
+            while (infec > nowOse) {
+                int x = rand() % 8;
+                int y = rand() % 12;
+                if (Oceania[y][x] == 1) {
+                    Oceania[y][x] = 3;
+                    nowOse++;
+                }
+                else if (Oceania[y][x] == 2) {
+                    Oceania[y][x] = 4;
+                    nowOse++;
+                }
+            }
+            break;
+        case 1:
+            while (infec > nowAfr) {
+                int x = rand() % 14;
+                int y = rand() % 15;
+                if (Africa[y][x] == 1) {
+                    Africa[y][x] = 3;
+                    nowAfr++;
+                }
+                else if (Africa[y][x] == 2) {
+                    Africa[y][x] = 4;
+                    nowAfr++;
+                }
+            }
+            break;
+        case 2:
+            while (infec > nowSAme) {
+                int x = rand() % 15;
+                int y = rand() % 16;
+                if (SouthAmerica[y][x] == 1) {
+                    SouthAmerica[y][x] = 3;
+                    nowSAme++;
+                }
+                else if (SouthAmerica[y][x] == 2) {
+                    SouthAmerica[y][x] = 4;
+                    nowSAme++;
+                }
+            }
+            break;
+        case 3:
+            while (infec > nowNAme) {
+                int x = rand() % 30;
+                int y = rand() % 16;
+                if (NorthAmerica[y][x] == 1) {
+                    NorthAmerica[y][x] = 3;
+                    nowNAme++;
+                }
+                else if (NorthAmerica[y][x] == 2) {
+                    NorthAmerica[y][x] = 4;
+                    nowNAme++;
+                }
+            }
+            break;
+        case 4:
+            while (infec > nowEA) {
+                int x = rand() % 39;
+                int y = rand() % 21;
+                if (EuAsia[y][x] == 1) {
+                    EuAsia[y][x] = 3;
+                    nowEA++;
+                }
+                else if (EuAsia[y][x] == 2) {
+                    EuAsia[y][x] = 4;
+                    nowEA++;
+                }
+            }
+            break;
+        }
+    }
+    updateMap();
 }
 
 void bloodRouteUpgrade() {
