@@ -32,6 +32,9 @@ void dropItem();            //아이템 떨어트리는 함수
 void AddRoute(int push, SHIP* nowShip);     //부딪힌 후 루트 생성하는 함수
 int goalCheck(SHIP* nowShip);           //적배가 목표지점에 들어왔을때 불리는 함수
 void updateTime();      //시간 업데이트 함수
+void MakeShip();        //화면에 배 생성하는 함수
+void TapBreakingShip();     //탭에서 배 모형 부수는 함수
+void ReBuildShip();         //탭에서 배 모형 살리는 함수
 void healing();             //배 체력 회복하는 함수
 void breakEffect(COORD pos);    //부숴지는 이펙트
 void goalEffect(COORD pos);    //부숴지는 이펙트
@@ -178,6 +181,7 @@ void main()
     initTap();
     RemoveCursor();
     MakeWorld();
+    MakeShip();
     printTime();
     printGold();
     drawFirstTap();
@@ -1189,6 +1193,7 @@ void itemUse() {
     if (itemwork[1] == 1) {//아이템 배 피 회복
         SHIP* nowShip = head->next;
         nowShip->health = nowShip->maxhp;
+        ReBuildShip();
         itemwork[1] = 0;
     }
     if (itemwork[2] == 1) {//지속시간동안 주인공 배 최고속도
@@ -1264,6 +1269,7 @@ void crashShip(SHIP* nowShip, SHIP* targetShip) // 충돌 시 파손도 감소, 백신배 �
 {
     nowShip->health -= targetShip->power;
     targetShip->health -= nowShip->power;
+    TapBreakingShip();
     SetCurrentCursorPos(0, 0);
 }
 
@@ -1363,6 +1369,85 @@ void updateTime()
     printTime();
 }
 
+void MakeShip() {                        //수리창 배 만들기 함수
+    int n = 0;
+    COORD curPos = { 90,42 };
+    for (int i = 0; i < 15; i++) {
+        for (int j = 0; j < 20; j++) {
+            SetCurrentCursorPos(curPos.X + j * 2, curPos.Y + i);
+            if (MyShip[i][j] == 0) {
+                Colorset(black, black);
+                printf(" ");
+            }
+            else if (MyShip[i][j] == 1) {
+                Colorset(white, white);
+                printf("■");
+                n++;
+            }
+            else if (MyShip[i][j] == 2) {
+                Colorset(gray, gray);
+                printf("■");
+                n++;
+            }
+            else if (MyShip[i][j] == 3) {
+                Colorset(black, black);
+                printf("■");
+            }
+            else if (MyShip[i][j] == 4) {
+                Colorset(black, black);
+                printf("■");
+            }
+        }
+    }
+}
+
+void TapBreakingShip() {        //탭에서 배 모형 부수는 함수
+    SHIP* nowShip = head->next;
+    double brokenPer;
+    int broken;
+    if (nowShip->health > 0) {
+        brokenPer = nowShip->health / (double)nowShip->maxhp * 100;
+        broken = 121 * (brokenPer / 100);
+    }
+    else {
+        brokenPer = 0;
+        broken = 0;
+        breakPlayer();
+    }
+    while (broken <= nowShiphealth) {
+        int x = rand() % 20;
+        int y = rand() % 15;
+        if (MyShip[y][x] == 1) {
+            MyShip[y][x] = 3;
+            nowShiphealth--;
+        }
+        else if (MyShip[y][x] == 2) {
+            MyShip[y][x] = 4;
+            nowShiphealth--;
+        }
+    }
+    MakeShip();
+}
+
+void ReBuildShip() {        //탭에서 배 모형 살리는 함수
+    SHIP* nowShip = head->next;
+    double rebuildPer = nowShip->health / (double)nowShip->maxhp * 100;
+    int rebuilt = 121 * (rebuildPer / 100);
+    while (rebuilt > nowShiphealth) {
+        int x = rand() % 20;
+        int y = rand() % 15;
+        if (MyShip[y][x] == 3) {
+            MyShip[y][x] = 1;
+            nowShiphealth++;
+        }
+        else if (MyShip[y][x] == 4) {
+            MyShip[y][x] = 2;
+            nowShiphealth++;
+        }
+    }
+    MakeShip();
+}
+
 void healing() {
     SHIP* nowShip = head->next;
     int incnt = 0;
@@ -1380,6 +1465,7 @@ void healing() {
             if (nowShip->health > nowShip->maxhp) {
                 nowShip->health = nowShip->maxhp;
             }
+            ReBuildShip();
         }
     }
 }
@@ -1851,6 +1937,7 @@ void dieShip() {
         SetCurrentCursorPos(head->next->startPos.X, head->next->startPos.Y);
         ShowShip(head->next);
         die = 0;
+        ReBuildShip();
     }
     else if (die == 1) {
         SetCurrentCursorPos(head->next->startPos.X, head->next->startPos.Y);
