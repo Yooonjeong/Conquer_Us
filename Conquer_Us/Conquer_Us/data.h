@@ -47,7 +47,8 @@ int currentBlood;
 int currentPropagation;
 int currentFatality;
 
-
+int logcnt;
+char log[20][50];
 
 SHIP* head;   //더미 머리
 SHIP* tail;   //더미 꼬리 

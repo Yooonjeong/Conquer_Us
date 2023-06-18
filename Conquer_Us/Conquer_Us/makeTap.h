@@ -60,3 +60,7 @@ void selectedTap(int i);
 void drawFirstTap();
 void printTime(); // time ฐüทร
 void printGold();
+void makeExplane();
+void printUpEx();
+void printLogEx();
+void printuserInformation();

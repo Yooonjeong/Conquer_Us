@@ -39,21 +39,26 @@ void healing();             //배 체력 회복하는 함수
 void breakEffect(COORD pos);    //부숴지는 이펙트
 void goalEffect(COORD pos);    //부숴지는 이펙트
 void makeitem(int p);           //아이템 만드는 함수
+void updatePeople();    // 인구 수 업데이트 함수
 void showPeopleBar();     // 인구 비율 바 생성 함수
-void showVaccineBar();      //백신 완성도 바 생성 함수
-void printPer();        //바 옆 퍼센티지 출력 함수
-void showBar();     //바 통합 출력
-void updateBar();       //바 업데이트 함수
+void showVaccineBar();    // 백신 완성도 바 생성 함수
+void printPer();          // 바 옆 퍼센티지 출력 함수
+void showBar();           // 바 통합 출력
+void updateBar();         // 바 업데이트 함수
 void updateMap();           //감염도에 따라 맵 업데이트하는 함수
 void virusUpCal(int i, int j, int maxPeople);       //감염도 계산
 void virusUp();             //감염도 올림
 void breakPlayer();         //플레이어 체력 0일때 없애는 함수
+void showStartScreen();         // 시작 화면 출력 함수
+void removeStartScreen();       // 시작 화면 삭제 함수
 void dieShip();             //배 죽이는 함수
 void itemUse();         //아이템 사용하는 함수
-void updateMapVirus();      //바이러스 맵에 업데이트
-void bloodRouteUpgrade();       //감염경로 혈액 업그레이드 시
+void updateMapVirus();
+void bloodRouteUpgrade();        // 감염경로 혈액 업그레이드 시
+void logIn(char ch[30]);
 int endCheck();
-
+void showEndingScreenWin();
+void showEndingScreenLose();
 
 /*백신 배 생성 링크드리스트 함수*/
 void InitList();                    //링크드 리스트 생성
@@ -63,7 +68,7 @@ SHIP* DeleteNode(SHIP* node);               //노드 삭제
 
 /*전역변수*/
 
-currentTap = 0;                     //현재 탭 상태
+currentTap = 0;                     //현제 탭 상태
 COORD spawnSet[8] = { {94,22}, {12,11}, {32,21},{128,29}, {140,9}, {80, 32} , {62,3},{46,19} };      //시작점(시작점 1 -> 도착점 1)
 COORD VirusSpawn = { 2,1 };             //바이러스 스폰 위치
 int totalSpeed = 5;                 //전체 속도
@@ -91,7 +96,6 @@ itemstart2 = 0;             //아이템 사용한 시간
 itemstart3 = 0;             //아이템 사용한 시간
 itemstart4 = 0;             //아이템 사용한 시간
 
-
 /*업그레이드 골드표*/
 goldSpeed[5] = { 50, 150, 250, 350, 450 };          //속도 업그레이드에 사용하는 골드
 goldHealth[10] = { 25, 50, 100, 125, 150, 175, 200, 250, 250, 250 };       //체력 업그레이드에 사용하는 골드
@@ -104,6 +108,7 @@ goldAnimal = 500;
 goldBlood = 500;
 goldAir = 500;
 goldGoldup[2] = { 300,800 };    // 재화획득량 업그레이드 골드
+//goldAir[] = 0;
 
 /*적배 관련 변수*/
 int moveRoute[8][200] = { {0,1,1,1,1,1,1,1,1,1,1,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-2,-2,-2,-2,-2,-2,-2,-2,-2,3},//1번움직임
@@ -177,6 +182,14 @@ void main()
     //vt.health = 0; // 임시
     system("mode con cols=200 lines=60");      //콘솔 크기 조정
     SetConsoleTitle(TEXT("Conqure Us"));        //콘솔 이름 설정
+    while (_kbhit() == 0)
+    {
+        showStartScreen(); // 임시로 press any key
+        Colorset(black, white);
+        SetCurrentCursorPos(82, 40);
+        printf("///PRESS ANY KEY TO START///");
+    }
+    removeStartScreen();
     InitList();
     initTap();
     RemoveCursor();
@@ -185,15 +198,19 @@ void main()
     printTime();
     printGold();
     drawFirstTap();
+    makeExplane();
     VirusShipSpawn(head);       // 바이러스배 리스트에 추가
-    showBar();
-    printPer();
+    showBar();                  // 바 출력 함수
+    printPer();                 // 퍼센티지 출력 함수
     srand((unsigned int)time(NULL));        //랜덤
     int nowstage = 0;
     int cnt = 0;
+    logIn("게임이 시작되었습니다.");
+    logIn("---------------- STAGE: 1----------------");
 
-    while (nowstage < 4) {
+    while (nowstage < 4) {// 원래 4인데 임시
         while (nowstage == stage) {
+            printLogEx();
             ProcessKeyInput();
             healing();
             SHIP* tmp = head->next;
@@ -223,18 +240,25 @@ void main()
             SetCurrentCursorPos(0, 0);
             updateMap();
             if (endCheck() > 0) {
+                system("cls");
                 if (endCheck() == 1)
-                    return 0;
+                    showEndingScreenWin();
                 else
-                    return 0;
+                    showEndingScreenLose();
                 getchar();
                 return 0;
             }
         }
         nowstage++;
+        switch (nowstage) {
+        case 1: logIn("---------------- STAGE: 2----------------"); break;
+        case 2: logIn("---------------- STAGE: 3----------------"); break;
+        case 3: logIn("---------------- STAGE: 4----------------"); break;
+        }
 
     }
     system("cls");
+    showEndingScreenLose();
     getchar();
 }
 
@@ -292,6 +316,12 @@ void Colorset(int backColor, int textColor) {         //색 변환 함수
 }
 
 void SummonVaccine(int type) {      //백신배 소환
+    switch (type) {
+    case 0: logIn("빨간색 백신배가 생성됩니다."); break;
+    case 1: logIn("노란색 화물선이 생성됩니다."); break;
+    case 2: logIn("회색 군함이 생성됩니다."); break;
+    case 3: logIn("어뢰가 생성됩니다."); break;
+    }
     SHIP* nowShip = head;       //여기서 처음 배 값을 넣어
 
     int PosSet = rand() % 8;     //소환장소 랜덤
@@ -543,6 +573,12 @@ void ProcessKeyInput() {//키 입력받는 함수
         showBar();
         printPer();
         virusUp();
+        /*SetCurrentCursorPos(0, 0);
+        for (int i = 0; i < 5; i++) {
+            printf("%d ", mapVirus[0][i]);
+        }
+        printf("\n%d %d", infectedPeople, deadPeople);
+        */
         if (_kbhit() != 0) {
             key = _getch();
             switch (key) {
@@ -646,6 +682,7 @@ void ProcessKeyInput() {//키 입력받는 함수
                         }
                         if (currentPropagation > 2) { currentPropagation -= 1; }
                         if (currentPropagation >= 2) break;
+                        logIn("전파력을 업그레이드 하였습니다.");
                         vt.gold -= goldPropagation[currentPropagation];
                         currentPropagation += 1;
                         printGold();
@@ -662,6 +699,7 @@ void ProcessKeyInput() {//키 입력받는 함수
                         }
                         if (currentFatality > 2) { currentFatality -= 1; }
                         if (currentFatality >= 2) break;
+                        logIn("치사율을 업그레이드 하였습니다.");
                         vt.gold -= goldFatality[currentFatality];
                         currentFatality += 1;
                         printGold();
@@ -675,6 +713,7 @@ void ProcessKeyInput() {//키 입력받는 함수
                         vt.gold -= goldGoldup[vt.goldup];
                         vt.goldup += 1;
                         goldUp = goldUp * 2;
+                        logIn("재화 획득량을 업그레이드 하였습니다.");
                         printGold();
                         colorChangeVirusTap(2, currentWaterLv);
                         break;
@@ -697,6 +736,7 @@ void ProcessKeyInput() {//키 입력받는 함수
                         vt.gold -= goldAnimal;
                         printGold();
                         colorChangeRouteTap(0);
+                        logIn("동물 전파를 업그레이드 하였습니다.");
                         break;
                     }
                     else if (currentrt == 1) {  //감염경로 혈액
@@ -708,9 +748,12 @@ void ProcessKeyInput() {//키 입력받는 함수
                         printGold();
                         bloodRouteUpgrade();                // 돌연변이 / 현재 업그레이드 중인 대륙의 치사율 랜덤으로 0단계로 하강 또는 2단계 상승
                         colorChangeRouteTap(1);
+                        logIn("혈액 전파를 업그레이드 하였습니다.");
                         if (currentBlood == 0) {
+                            logIn("돌연변이로 치사율이 0 레벨이 되었습니다.");
                         }
                         else if (currentBlood == 1) {
+                            logIn("돌연변이로 치사율이 2 레벨 상승합니다.");
                         }
                         break;
                     }
@@ -722,6 +765,7 @@ void ProcessKeyInput() {//키 입력받는 함수
                         vt.gold -= goldAir;
                         printGold();
                         colorChangeRouteTap(2);
+                        logIn("대기 전파를 업그레이드 하였습니다.");
                         break;
                     }
                     else if (currentrt == 3) {      //감염경로 물
@@ -742,6 +786,7 @@ void ProcessKeyInput() {//키 입력받는 함수
                             colorChangeRouteTap(currentrt);
                         }
                         currentWaterLv = rt.water;
+                        logIn("물 경로를 업그레이드 하였습니다.");
                         colorChangeRouteTap(3);
                         break;
                     }
@@ -753,6 +798,7 @@ void ProcessKeyInput() {//키 입력받는 함수
                         vt.gold -= goldHealing[rt.port];
                         printGold();
                         rt.port += 1;
+                        logIn("선착장을 업그레이드 하였습니다.");
                         colorChangeRouteTap(4);
                         break;
                     }
@@ -774,6 +820,7 @@ void ProcessKeyInput() {//키 입력받는 함수
                         vt.gold -= goldPower[st.power];
                         printGold();
                         st.power += 1;
+                        logIn("배 공격력을 업그레이드 하였습니다.");
                         colorChangeShipTap(0);
                         break;
                     }
@@ -788,6 +835,7 @@ void ProcessKeyInput() {//키 입력받는 함수
                         vt.gold -= goldHealth[st.health];
                         printGold();
                         st.health += 1;
+                        logIn("배 체력을 업그레이드 하였습니다.");
                         colorChangeShipTap(1);
                         break;
                     }
@@ -799,6 +847,7 @@ void ProcessKeyInput() {//키 입력받는 함수
                         vt.gold -= goldSpeed[st.speed];
                         printGold();
                         st.speed += 1;
+                        logIn("배 속도를 업그레이드 하였습니다.");
                         colorChangeShipTap(2);
                         break;
                     }
@@ -814,6 +863,7 @@ void ProcessKeyInput() {//키 입력받는 함수
                     if (currentit == 0) { //가짜기름유포(백신 배 속도 감소)
                         check = 1;
                         if (itemList[0] > 0) {
+                            logIn("가짜기름유포를 사용하였습니다.");
                             itemList[0] -= 1;
                             itemwork[0] = 1;
                             itemUse();
@@ -824,6 +874,7 @@ void ProcessKeyInput() {//키 입력받는 함수
                     else if (currentit == 1) { //주인공 배 체력 회복
                         check = 1;
                         if (itemList[1] > 0) {
+                            logIn("긴급 회복을 사용하였습니다.");
                             itemList[1] -= 1;
                             itemwork[1] = 1;
                             itemUse();
@@ -834,6 +885,7 @@ void ProcessKeyInput() {//키 입력받는 함수
                     else if (currentit == 2) { // 일시적 속도 증가 최대로(1)
                         check = 1;
                         if (itemList[2] > 0) {
+                            logIn("속도 최대를 사용하였습니다.");
                             itemList[2] -= 1;
                             itemwork[2] = 1;
                             itemstart2 = vt.min;
@@ -845,6 +897,7 @@ void ProcessKeyInput() {//키 입력받는 함수
                     else if (currentit == 3) { // 모든 상대 배 부시기
                         check = 1;
                         if (itemList[3] > 0) {
+                            logIn("어뢰를 사용하였습니다.");
                             itemList[3] -= 1;
                             itemwork[3] = 1;
 
@@ -855,6 +908,14 @@ void ProcessKeyInput() {//키 입력받는 함수
                     }
                     else if (currentit == 4) { // 얻는 골드 획득량 영구적 증가
                         check = 1;
+                        /*if (itemList[4] > 0) {
+                            logIn("인질극을 사용하였습니다.");
+                            itemList[4] -= 1;
+                            itemwork[4] = 1;
+                            itemstart4 = vt.min;
+                            itemUse();
+                        }*/
+                        logIn("인질극을 사용하였습니다.");
                         itemList[4] -= 1;
                         itemwork[4] = 1;
                         itemstart4 = vt.min;
@@ -867,6 +928,7 @@ void ProcessKeyInput() {//키 입력받는 함수
                     break;
                 }
                 break;
+
             case A:
                 if (currentTap == 0) {
                     if (currentvt == 0) break;
@@ -1108,6 +1170,7 @@ void ProcessKeyInput() {//키 입력받는 함수
                 SummonVaccine(1); break;
             }
         }
+        printUpEx();
         Sleep(totalSpeed);
     }
 }
@@ -1129,6 +1192,7 @@ int detectCollision(int posX, int posY, SHIP* nowship) {
     {
         if (World[arrY][arrX] == 5 || World[arrY][arrX] == 10 || World[arrY][arrX] == 11 || World[arrY][arrX] == 12 || World[arrY][arrX] == 13 || World[arrY][arrX] == 14) { // 플레이어 배 충돌x
             if (World[arrY][arrX] == 10) {
+                logIn("가짜 기름 유포 아이템 획득");
                 itemList[0] += 1;
                 World[arrY][arrX] = 5;
                 Colorset(lightBlue, lightBlue);
@@ -1137,6 +1201,7 @@ int detectCollision(int posX, int posY, SHIP* nowship) {
                     colorChangeItemTap(currentit);
             }
             else if (World[arrY][arrX] == 11) {
+                logIn("긴급 회복 아이템 획득");
                 itemList[1] += 1;
                 World[arrY][arrX] = 5;
                 Colorset(lightBlue, lightBlue);
@@ -1145,6 +1210,7 @@ int detectCollision(int posX, int posY, SHIP* nowship) {
                     colorChangeItemTap(currentit);
             }
             else if (World[arrY][arrX] == 12) {
+                logIn("속도 최대 아이템 획득");
                 itemList[2] += 1;
                 World[arrY][arrX] = 5;
                 Colorset(lightBlue, lightBlue);
@@ -1153,6 +1219,7 @@ int detectCollision(int posX, int posY, SHIP* nowship) {
                     colorChangeItemTap(currentit);
             }
             else if (World[arrY][arrX] == 13) {//맵 위의 모든 백신배 전부다 없애기
+                logIn("어뢰 아이템 획득");
                 itemList[3] += 1;
                 World[arrY][arrX] = 5;
                 Colorset(lightBlue, lightBlue);
@@ -1161,6 +1228,7 @@ int detectCollision(int posX, int posY, SHIP* nowship) {
                     colorChangeItemTap(currentit);
             }
             else if (World[arrY][arrX] == 14) {
+                logIn("인질극 아이템 획득");
                 itemList[4] += 1;
                 World[arrY][arrX] = 5;
                 Colorset(lightBlue, lightBlue);
@@ -1339,6 +1407,7 @@ void AddRoute(int push, SHIP* nowShip) {
 int goalCheck(SHIP* nowShip) {
     if (nowShip->move == 3) {
         if (nowShip->type == 2) return 0;
+        logIn("적이 목표에 도달해 백신을 제작합니다.");
         return 0;
     }
     return 1;
@@ -1401,7 +1470,7 @@ void MakeShip() {                        //수리창 배 만들기 함수
     }
 }
 
-void TapBreakingShip() {        //탭에서 배 모형 부수는 함수
+void TapBreakingShip() {
     SHIP* nowShip = head->next;
     double brokenPer;
     int broken;
@@ -1429,7 +1498,7 @@ void TapBreakingShip() {        //탭에서 배 모형 부수는 함수
     MakeShip();
 }
 
-void ReBuildShip() {        //탭에서 배 모형 살리는 함수
+void ReBuildShip() {
     SHIP* nowShip = head->next;
     double rebuildPer = nowShip->health / (double)nowShip->maxhp * 100;
     int rebuilt = 121 * (rebuildPer / 100);
@@ -1447,7 +1516,6 @@ void ReBuildShip() {        //탭에서 배 모형 살리는 함수
     }
     MakeShip();
 }
-
 void healing() {
     SHIP* nowShip = head->next;
     int incnt = 0;
@@ -1538,6 +1606,12 @@ void makeitem(int p) {
         break;
     }
 }
+void updatePeople()
+{
+    // 추후에 바이러스 전파 완료 후 반영 예정
+
+}
+
 void showBar()            // Bar 통합
 {
     showPeopleBar();
@@ -1604,7 +1678,7 @@ void updateBar()
 
 }
 
-void updateMap() {      //감염도에 따라 맵 업데이트하는 함수
+void updateMap() {
     for (int i = 0; i < 30; i++) {
         for (int j = 0; j < 16; j++) {
             if (NorthAmerica[j][i] == 3) {
@@ -1691,7 +1765,7 @@ void updateMap() {      //감염도에 따라 맵 업데이트하는 함수
 
 }
 
-void virusUpCal(int i, int j, int maxPeople) {      //감염도 계산
+void virusUpCal(int i, int j, int maxPeople) {
     int plusDiff; //mapVirus에 추가할 양
     int k = mapVirus[0][i] / 5;
     int total = mapVirus[0][0] + mapVirus[0][1] + mapVirus[0][2] + mapVirus[0][3] + mapVirus[0][4];
@@ -1840,7 +1914,8 @@ void virusUpCal(int i, int j, int maxPeople) {      //감염도 계산
 }
 
 
-void virusUp() {        //감염도 올림
+void virusUp() {
+    // 30초마다 업데이트로 해놓음 수정하쟈
     if (virusUpCheck == 1) {
         if (currentWaterLv == 0) {
             if (infectedPeople == 0) {
@@ -1924,13 +1999,53 @@ void virusUp() {        //감염도 올림
     else { return; }
 }
 
+
 void breakPlayer() {
+    logIn("플레이어 배가 파괴되었습니다.");
+    logIn("20분 후 재생성됩니다.");
     die = 1;
     dieTime = vt.min;
+}
+void showStartScreen()
+{
+    COORD curPos = { 5,10 };
+
+    for (int i = 1; i < LOGO_HEIGHT - 1; i++) {
+        for (int j = 1; j < LOGO_WIDTH - 1; j++) {
+            SetCurrentCursorPos(curPos.X + j * 2, curPos.Y + i);
+            if (Logo[i][j] == 0) {
+                Colorset(black, white);
+                printf("#");
+            }
+            else if (Logo[i][j] == 1) {
+                Colorset(black, white);
+                printf(" ");
+            }
+            else if (Logo[i][j] == 2) {
+                Colorset(white, white);
+                printf("X");
+            }
+        }
+    }
+}
+void removeStartScreen() {
+    COORD curPos = { 5,10 };
+    Colorset(black, white);
+    for (int i = 1; i < LOGO_HEIGHT - 1; i++) {
+        for (int j = 1; j < LOGO_WIDTH - 1; j++) {
+            SetCurrentCursorPos(curPos.X + j * 2, curPos.Y + i);
+            printf(" ");
+        }
+    }
+    SetCurrentCursorPos(82, 40);
+    printf("                            ");
 }
 
 void dieShip() {
     if (die == 1 && vt.min >= dieTime + 100) {
+        SetCurrentCursorPos(96, 47);
+        Colorset(black, white);
+        printf("                                              ");
         head->next->startPos.X = 2;
         head->next->startPos.Y = 2;
         head->next->health = (int)(head->next->maxhp / 3);
@@ -1938,6 +2053,7 @@ void dieShip() {
         ShowShip(head->next);
         die = 0;
         ReBuildShip();
+        logIn("배가 재생성 되었습니다.");
     }
     else if (die == 1) {
         SetCurrentCursorPos(head->next->startPos.X, head->next->startPos.Y);
@@ -1945,10 +2061,15 @@ void dieShip() {
         if (World[head->next->startPos.Y][head->next->startPos.X / 2] == head->next->type) {     //바다면
             World[head->next->startPos.Y][head->next->startPos.X / 2] = 5;     //type으로 바꿈
         }
+        SetCurrentCursorPos(96, 47);
+        Colorset(black, red);
+        printf("                                              ");
+        SetCurrentCursorPos(96, 47);
+        printf("배 파괴됨 /// 복구까지 남은시간 : %d분", (int)((dieTime + 100 - vt.min) / 4));
     }
 }
 
-void updateMapVirus() {         //바이러스 맵에 업데이트
+void updateMapVirus() {
     for (int i = 0; i < rt.water + 1; i++) {
         int infec = mapVirus[0][i];
         switch (i) {
@@ -2040,7 +2161,19 @@ void bloodRouteUpgrade() {
     }
 }
 
-
+void logIn(char ch[30]) {
+    if (logcnt < 20) {
+        strcpy(log[logcnt], ch);
+        logcnt++;
+    }
+    else {
+        for (int i = 1; i <= logcnt; i++) {
+            strcpy(log[i - 1], log[i]);
+        }
+        strcpy(log[logcnt - 1], ch);
+        logcnt = 20;
+    }
+}
 
 int endCheck() {
     if (deadPeople >= totalPeople / 2) {
@@ -2052,3 +2185,50 @@ int endCheck() {
     return 0;
 }
 
+void showEndingScreenWin()
+{
+    COORD curPos = { 5,12 };
+    Colorset(black, white);
+    for (int i = 1; i < 25 - 1; i++) {
+        for (int j = 1; j < 95 - 1; j++) {
+            SetCurrentCursorPos(curPos.X + j * 2, curPos.Y + i);
+            if (viruswin[i][j] == 0) {
+                Colorset(black, white);
+                printf("@");
+            }
+            else if (viruswin[i][j] == 1) {
+                Colorset(black, white);
+                printf(" ");
+            }
+            else if (viruswin[i][j] == 2) {
+                Colorset(white, white);
+                printf("X");
+            }
+        }
+    }
+    Colorset(black, white);
+}
+
+void showEndingScreenLose()
+{
+    COORD curPos = { 5,12 };
+    Colorset(black, white);
+    for (int i = 1; i < 25 - 1; i++) {
+        for (int j = 1; j < 95 - 1; j++) {
+            SetCurrentCursorPos(curPos.X + j * 2, curPos.Y + i);
+            if (virusLose[i][j] == 0) {
+                Colorset(black, white);
+                printf("@");
+            }
+            else if (virusLose[i][j] == 1) {
+                Colorset(black, white);
+                printf(" ");
+            }
+            else if (virusLose[i][j] == 2) {
+                Colorset(white, white);
+                printf("X");
+            }
+        }
+    }
+    Colorset(black, white);
+}

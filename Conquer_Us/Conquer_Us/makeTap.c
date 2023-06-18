@@ -1,7 +1,6 @@
 #include "makeTap.h"
 #include "data.h"
-
-void removeTap() {      //탭 지우기
+void removeTap() {
     SetCurrentCursorPos(5, 45);
     Colorset(black, white);
     for (int i = 0; i < 63; i++) {
@@ -12,7 +11,7 @@ void removeTap() {      //탭 지우기
     }
 }
 
-void initTap() {    //기본 설정 초기화
+void initTap() {
     for (int i = 0; i < 5; i++) { vt.fatality[i] = 0; }
     for (int i = 0; i < 5; i++) { vt.propagation[i] = 0; }
     st.power = 0;
@@ -29,7 +28,7 @@ void initTap() {    //기본 설정 초기화
     it.engine = 0;
     it.hostage = 0;
 }
-void drawBox(int fstPosX, int fstPosY, int width, int height) {     //탭에서 사각형 그리는 함수
+void drawBox(int fstPosX, int fstPosY, int width, int height) {
     SetCurrentCursorPos(fstPosX, fstPosY);
     for (int i = 0; i < width; i++) {
         SetCurrentCursorPos(fstPosX + i, fstPosY);
@@ -62,7 +61,147 @@ void drawBox(int fstPosX, int fstPosY, int width, int height) {     //탭에서 사�
         }
     }
 }
-void colorChangeVirusTap(int i, int j) {        //현재 위치에 따라 색 변경-바이러스 탭
+//void colorChangeVirusTap(int i, int j) {
+//    removeTap();
+//    if (i == 0) {
+//        Colorset(black, sky);
+//        drawBox(10, 47, 16, 6);
+//        SetCurrentCursorPos(17, 48);
+//        if (currentPropagation < 2) {
+//            printf("%d G", goldPropagation[currentPropagation]);
+//        }
+//        else {
+//            printf("불가");
+//        }
+//        SetCurrentCursorPos(15, 50);
+//        printf("공 격 력");
+//        SetCurrentCursorPos(16, 52);
+//        if (st.power != 10)
+//            printf("Lv. %d", st.power);
+//        else
+//            printf("Lv. MAX");
+//        Colorset(black, white);
+//        drawBox(30, 47, 16, 6);
+//        SetCurrentCursorPos(37, 48);
+//        if (st.health != 10)
+//            printf("%d G", goldHealth[st.health]);
+//        else
+//            printf("불가");
+//        SetCurrentCursorPos(35, 50);
+//        printf("내 구 력");
+//        SetCurrentCursorPos(36, 52);
+//        if (st.health != 10)
+//            printf("Lv. %d", st.health);
+//        else
+//            printf("Lv. MAX");
+//        drawBox(50, 47, 16, 6);
+//        SetCurrentCursorPos(57, 48);
+//        if (st.speed != 5)
+//            printf("%d G", goldSpeed[st.speed]);
+//        else
+//            printf("불가");
+//        SetCurrentCursorPos(56, 50);
+//        printf("속 도");
+//        SetCurrentCursorPos(56, 52);
+//        if (st.speed != 5)       //최고 레벨이 아니면
+//            printf("Lv. %d", st.speed);     //스피드 고정
+//        else {
+//            printf("Lv. MAX");
+//        }
+//    }
+//    else if (i == 1) {
+//        Colorset(black, white);
+//        drawBox(10, 47, 16, 6);
+//        SetCurrentCursorPos(17, 48);
+//        if (st.power != 10)
+//            printf("%d G", goldPower[st.power]);
+//        else
+//            printf("불가");
+//        SetCurrentCursorPos(15, 50);
+//        printf("공 격 력");
+//        SetCurrentCursorPos(16, 52);
+//        if (st.power != 10)
+//            printf("Lv. %d", st.power);
+//        else
+//            printf("Lv. MAX");
+//        Colorset(black, sky);
+//        drawBox(30, 47, 16, 6);
+//        SetCurrentCursorPos(37, 48);
+//        if (st.health != 10)
+//            printf("%d G", goldHealth[st.health]);
+//        else
+//            printf("불가");
+//        SetCurrentCursorPos(35, 50);
+//        printf("내 구 력");
+//        SetCurrentCursorPos(36, 52);
+//        if (st.health != 10)
+//            printf("Lv. %d", st.health);
+//        else
+//            printf("Lv. MAX");
+//        Colorset(black, white);
+//        drawBox(50, 47, 16, 6);
+//        SetCurrentCursorPos(57, 48);
+//        if (st.speed != 5)
+//            printf("%d G", goldSpeed[st.speed]);
+//        else
+//            printf("불가");
+//        SetCurrentCursorPos(56, 50);
+//        printf("속 도");
+//        SetCurrentCursorPos(56, 52);
+//        if (st.speed != 5)       //최고 레벨이 아니면
+//            printf("Lv. %d", st.speed);     //스피드 고정
+//        else {
+//            printf("Lv. MAX");
+//        }
+//    }
+//    else if (i == 2) {
+//        Colorset(black, white);
+//        drawBox(10, 47, 16, 6);
+//        SetCurrentCursorPos(17, 48);
+//        if (st.power != 10)
+//            printf("%d G", goldPower[st.power]);
+//        else
+//            printf("불가");
+//        SetCurrentCursorPos(15, 50);
+//        printf("공 격 력");
+//        SetCurrentCursorPos(16, 52);
+//        if (st.power != 10)
+//            printf("Lv. %d", st.power);
+//        else
+//            printf("Lv. MAX");
+//        drawBox(30, 47, 16, 6);
+//        SetCurrentCursorPos(37, 48);
+//        if (st.health != 10)
+//            printf("%d G", goldHealth[st.health]);
+//        else
+//            printf("불가");
+//        SetCurrentCursorPos(35, 50);
+//        printf("내 구 력");
+//        SetCurrentCursorPos(36, 52);
+//        if (st.health != 10)
+//            printf("Lv. %d", st.health);
+//        else
+//            printf("Lv. MAX");
+//        Colorset(black, sky);
+//        drawBox(50, 47, 16, 6);
+//        SetCurrentCursorPos(57, 48);
+//        if (st.speed != 5)
+//            printf("%d G", goldSpeed[st.speed]);
+//        else
+//            printf("불가");
+//        SetCurrentCursorPos(56, 50);
+//        printf("속 도");
+//        SetCurrentCursorPos(56, 52);
+//        if (st.speed != 5)       //최고 레벨이 아니면
+//            printf("Lv. %d", st.speed);     //스피드 고정
+//        else {
+//            printf("Lv. MAX");
+//        }
+//    }
+//    Colorset(black, white);
+//
+//}
+void colorChangeVirusTap(int i, int j) {
     removeTap();
     if (i == 0) {
         Colorset(black, sky);
@@ -227,7 +366,7 @@ void colorChangeVirusTap(int i, int j) {        //현재 위치에 따라 색 변경-바이�
     Colorset(black, white);
 
 }
-void colorChangeRouteTap(int i) {        //현재 위치에 따라 색 변경-감염경로 탭
+void colorChangeRouteTap(int i) {
     removeTap();
     if (i == 0) {
         Colorset(black, sky);
@@ -649,7 +788,7 @@ void colorChangeRouteTap(int i) {        //현재 위치에 따라 색 변경-감염경로 탭
     }
 }
 
-void colorChangeShipTap(int i) {        //현재 위치에 따라 색 변경-배 강화 탭
+void colorChangeShipTap(int i) {
     removeTap();
     if (i == 0) {
         Colorset(black, sky);
@@ -787,7 +926,7 @@ void colorChangeShipTap(int i) {        //현재 위치에 따라 색 변경-배 강화 탭
     Colorset(black, white);
 
 }
-void colorChangeItemTap(int i) {        //현재 위치에 따라 색 변경-아이템 탭
+void colorChangeItemTap(int i) {
     removeTap();
     if (i == 0) {
         Colorset(black, sky);
@@ -940,7 +1079,7 @@ void colorChangeItemTap(int i) {        //현재 위치에 따라 색 변경-아이템 탭
     Colorset(black, white);
 }
 
-void selectedTap(int i) {       //선택된 탭 나타내기
+void selectedTap(int i) {
     if (i == 0) {
         removeTap();
         Colorset(black, brightYellow);
@@ -1014,7 +1153,7 @@ void selectedTap(int i) {       //선택된 탭 나타내기
     Colorset(black, white);
 }
 
-void drawFirstTap() {        //아무 것도 선택하기 전 처음 탭 나타내기
+void drawFirstTap() {
     Colorset(black, white);
     int key = 0;
     int check = 0;
@@ -1056,7 +1195,6 @@ void drawFirstTap() {        //아무 것도 선택하기 전 처음 탭 나타내기
 
     selectedTap(0);
 }
-
 /*Time 관련*/
 void printTime() {
     Colorset(black, white);
@@ -1073,4 +1211,347 @@ void printGold() {
     printf("         ");
     SetCurrentCursorPos(76, 39);
     printf("%dG", vt.gold);
+}
+
+void makeExplane() {
+    SetCurrentCursorPos(156, 0);
+    printf("상황판");
+    drawBox(153, 1, 45, 21);
+    SetCurrentCursorPos(156, 23);
+    printf("유저 정보");
+    drawBox(153, 24, 45, 14);
+    SetCurrentCursorPos(156, 39);
+    printf("강화 설명");
+    drawBox(153, 40, 45, 19);
+
+
+}
+void printUpEx() {
+    printuserInformation();
+    Colorset(black, white);
+    for (int i = 0; i < 17; i++) {
+        SetCurrentCursorPos(156, 42 + i);
+        printf("                                         ");
+    }
+    if (currentTap == 0) {
+        if (check == 0) {
+            SetCurrentCursorPos(156, 42);
+            Colorset(black, brightYellow);
+            printf("바이러스 업그레이드");
+            Colorset(black, white);
+            SetCurrentCursorPos(156, 44);
+            printf("▷ 바이러스의 전파력, 살상력 같은 것들을 ");
+            SetCurrentCursorPos(156, 45);
+            printf("   강화합니다.");
+        }
+        else {
+            if (currentvt == 0) {
+                SetCurrentCursorPos(156, 42);
+                Colorset(black, sky);
+                printf("전파력 업그레이드");
+                Colorset(black, white);
+                SetCurrentCursorPos(156, 44);
+                printf("▷ 바이러스가 퍼지는 속도를 더욱 ");
+                SetCurrentCursorPos(156, 45);
+                printf("   빠르게 합니다.");
+                SetCurrentCursorPos(156, 48);
+                Colorset(black, red);
+                printf("※ 목표는 사망자수를 늘리는 것임을");
+                SetCurrentCursorPos(156, 49);
+                printf("   잊지마십시오.");
+            }
+            else if (currentvt == 1) {
+                SetCurrentCursorPos(156, 42);
+                Colorset(black, sky);
+                printf("치사율 업그레이드");
+                Colorset(black, white);
+                SetCurrentCursorPos(156, 44);
+                printf("▷ 바이러스에 감염된 사람이 사망에 이를 ");
+                SetCurrentCursorPos(156, 45);
+                printf("   확률을 더욱 크게 만들 수 있습니다.");
+                SetCurrentCursorPos(156, 48);
+                Colorset(black, red);
+                printf("※ 사망자수는 목표에 다다르는 길이지만");
+                SetCurrentCursorPos(156, 49);
+                printf("   사망한 사망자수는 감염자에 포함되지");
+                SetCurrentCursorPos(156, 50);
+                printf("   않아 퍼지는 속도가 느려질 수 있습니다.");
+            }
+            else if (currentvt == 2) {
+                SetCurrentCursorPos(156, 42);
+                Colorset(black, sky);
+                printf("재화 획득량 업그레이드");
+                Colorset(black, white);
+                SetCurrentCursorPos(156, 44);
+                printf("▷ 백신 배를 부술 때 획득하는 재화량을 ");
+                SetCurrentCursorPos(156, 45);
+                printf("   두 배로 업데이트할 수 있습니다.");
+                SetCurrentCursorPos(156, 48);
+                Colorset(black, green);
+                printf("   0레벨 - 40G 획득");
+                SetCurrentCursorPos(156, 49);
+                printf("   1레벨 - 80G 획득");
+                SetCurrentCursorPos(156, 50);
+                printf("   2레벨 - 160G 획득");
+            }
+        }
+    }
+    else if (currentTap == 1) {
+        if (check == 0) {
+            SetCurrentCursorPos(156, 42);
+            Colorset(black, brightYellow);
+            printf("감염경로 업그레이드");
+            Colorset(black, white);
+            SetCurrentCursorPos(156, 44);
+            printf("▷ 바이러스에 관련된 부가적인 요소");
+            SetCurrentCursorPos(156, 45);
+            printf("   (타 대륙 감염, 적 약화, 회복량증가)");
+            SetCurrentCursorPos(156, 46);
+            printf("   를 강화합니다.");
+        }
+        else {
+            if (currentrt == 0) {
+                SetCurrentCursorPos(156, 42);
+                Colorset(black, sky);
+                printf("동물 업그레이드");
+                Colorset(black, white);
+                SetCurrentCursorPos(156, 44);
+                printf("▷ 해당 대륙 내부에서의 전파력을");
+                SetCurrentCursorPos(156, 45);
+                printf("    강화합니다.");
+                SetCurrentCursorPos(156, 48);
+                Colorset(black, red);
+                printf("※ 해당 대륙은 해금된 모든 대륙을");
+                SetCurrentCursorPos(156, 49);
+                printf("   말하며, 물 강화 시 초기화됩니다.");
+            }
+            else if (currentrt == 1) {
+                SetCurrentCursorPos(156, 42);
+                Colorset(black, sky);
+                printf("혈액 업그레이드");
+                Colorset(black, white);
+                SetCurrentCursorPos(156, 44);
+                printf("▷ 해당 대륙 내부에서의 바이러스에 ");
+                SetCurrentCursorPos(156, 45);
+                printf("   돌연변이를 생성해, 살상력을 랜덤");
+                SetCurrentCursorPos(156, 46);
+                printf("   하게 상승시킵니다.");
+                SetCurrentCursorPos(156, 49);
+                Colorset(black, red);
+                printf("※ 해당 대륙은 해금된 모든 대륙을");
+                SetCurrentCursorPos(156, 50);
+                printf("   말하며, 물 강화 시 초기화됩니다.");
+            }
+            else if (currentrt == 2) {
+                SetCurrentCursorPos(156, 42);
+                Colorset(black, sky);
+                printf("대기 업그레이드");
+                Colorset(black, white);
+                SetCurrentCursorPos(156, 44);
+                printf("▷ 바이러스의 전파력의 일부분이 타 대륙");
+                SetCurrentCursorPos(156, 45);
+                printf("   의 감염자수에 약간 영향받습니다.");
+                SetCurrentCursorPos(156, 48);
+                Colorset(black, red);
+                printf("※ 대기를 강화하지 않을 경우 해당 대륙");
+                SetCurrentCursorPos(156, 49);
+                printf("   의 감염자수에만 영향을 받으며");
+                SetCurrentCursorPos(156, 50);
+                printf("   강화할 경우 전체 감염자수에 약간");
+                SetCurrentCursorPos(156, 51);
+                printf("   영향받습니다.");
+            }
+            else if (currentrt == 3) {
+                SetCurrentCursorPos(156, 42);
+                Colorset(black, sky);
+                printf("물 업그레이드");
+                Colorset(black, white);
+                SetCurrentCursorPos(156, 44);
+                printf("▷ 전파력이 작용할 수 있는 다양한");
+                SetCurrentCursorPos(156, 45);
+                printf("   대륙을 해금합니다.");
+                SetCurrentCursorPos(156, 48);
+                Colorset(black, green);
+                printf("   0레벨 - 오세아니아");
+                SetCurrentCursorPos(156, 49);
+                printf("   1레벨 - 아프리카 해금");
+                SetCurrentCursorPos(156, 50);
+                printf("   2레벨 - 남아메리카 해금");
+                SetCurrentCursorPos(156, 51);
+                printf("   3레벨 - 북아메리카 해금");
+                SetCurrentCursorPos(156, 52);
+                printf("   4레벨 - 유라시아 해금");
+            }
+            else if (currentrt == 4) {
+                SetCurrentCursorPos(156, 42);
+                Colorset(black, sky);
+                printf("선착장 업그레이드");
+                Colorset(black, white);
+                SetCurrentCursorPos(156, 44);
+                printf("▷ 각 대륙에 붙어있는 선착장에서 받을 수");
+                SetCurrentCursorPos(156, 45);
+                printf("   있는 수리 속도를 빠르게 합니다.");
+            }
+        }
+    }
+    else if (currentTap == 2) {
+        if (check == 0) {
+            SetCurrentCursorPos(156, 42);
+            Colorset(black, brightYellow);
+            printf("배 업그레이드");
+            Colorset(black, white);
+            SetCurrentCursorPos(156, 44);
+            printf("▷ 플레이어가 움직이는 배의 성능을 ");
+            SetCurrentCursorPos(156, 45);
+            printf("   강화합니다.");
+            SetCurrentCursorPos(156, 46);
+            printf("   (공격력, 내구력, 속도)");
+        }
+        else {
+            if (currentst == 0) {
+                SetCurrentCursorPos(156, 42);
+                Colorset(black, sky);
+                printf("공격력 업그레이드");
+                Colorset(black, white);
+                SetCurrentCursorPos(156, 44);
+                printf("▷ 적배를 부딪혔을 경우 적배에");
+                SetCurrentCursorPos(156, 45);
+                printf("   주는 데미지를 강화합니다.");
+            }
+            else if (currentst == 1) {
+                SetCurrentCursorPos(156, 42);
+                Colorset(black, sky);
+                printf("내구력 업그레이드");
+                Colorset(black, white);
+                SetCurrentCursorPos(156, 44);
+                printf("▷ 플레이어의 체력을 강화하여 적배에");
+                SetCurrentCursorPos(156, 45);
+                printf("   자주 부딪혀도 침몰하지 않습니다.");
+            }
+            else if (currentst == 2) {
+                SetCurrentCursorPos(156, 42);
+                Colorset(black, sky);
+                printf("속도 업그레이드");
+                Colorset(black, white);
+                SetCurrentCursorPos(156, 44);
+                printf("▷ 플레이어의 속도를 강화하여 ");
+                SetCurrentCursorPos(156, 45);
+                printf("   빠르게 이동할 수 있도록 합니다.");
+            }
+        }
+    }
+    else if (currentTap == 3) {
+        if (check == 0) {
+            SetCurrentCursorPos(156, 42);
+            Colorset(black, brightYellow);
+            printf("아이템 사용");
+            Colorset(black, white);
+            SetCurrentCursorPos(156, 44);
+            printf("▷ 적 배를 침몰시켜서 확률적으로 ");
+            SetCurrentCursorPos(156, 45);
+            printf("   획득한 아이템을 사용할 수 있는 탭");
+        }
+        else {
+            if (currentit == 0) {
+                SetCurrentCursorPos(156, 42);
+                Colorset(black, sky);
+                printf("가짜기름유포 사용");
+                Colorset(black, white);
+                SetCurrentCursorPos(156, 44);
+                printf("▷ 현재 맵에 있는 모든 배의 속도를 ");
+                SetCurrentCursorPos(156, 45);
+                printf("   감소시킵니다.");
+            }
+            else if (currentit == 1) {
+                SetCurrentCursorPos(156, 42);
+                Colorset(black, sky);
+                printf("긴급회복 사용");
+                Colorset(black, white);
+                SetCurrentCursorPos(156, 44);
+                printf("▷ 현재 배의 체력을 100% 회복합니다.");
+            }
+            else if (currentit == 2) {
+                SetCurrentCursorPos(156, 42);
+                Colorset(black, sky);
+                printf("속도 최대 사용");
+                Colorset(black, white);
+                SetCurrentCursorPos(156, 44);
+                printf("▷ 잠깐 배의 속도를 최대 강화 수치로");
+                SetCurrentCursorPos(156, 45);
+                printf("   적용시킵니다. (일정시간후 초기화)");
+            }
+            else if (currentit == 3) {
+                SetCurrentCursorPos(156, 42);
+                Colorset(black, sky);
+                printf("어뢰 사용");
+                Colorset(black, white);
+                SetCurrentCursorPos(156, 44);
+                printf("▷ 맵상에 있는 모든 배를 파괴합니다.");
+                SetCurrentCursorPos(156, 47);
+                Colorset(black, red);
+                printf("※ 부숴진 배의 아래 랜덤으로 아이템 생성");
+            }
+            else if (currentit == 4) {
+                SetCurrentCursorPos(156, 42);
+                Colorset(black, sky);
+                printf("인질극 사용");
+                Colorset(black, white);
+                SetCurrentCursorPos(156, 44);
+                printf("▷ 배를 부쉈을때 획득할 수 있는 재화");
+                SetCurrentCursorPos(156, 45);
+                printf("   의 양을 3배 증가시킵니다.");
+                SetCurrentCursorPos(156, 47);
+                Colorset(black, red);
+                printf("※ 일정시간 후 초기화");
+                SetCurrentCursorPos(156, 48);
+                printf("※ 사용 중 한번 더 사용시 효과는 ");
+                SetCurrentCursorPos(156, 49);
+                printf("   그대로지만 시간은 추가됨");
+            }
+        }
+    }
+}
+
+void printLogEx() {
+    for (int i = 0; i < logcnt; i++) {
+        if (i % 2 == 0)
+            Colorset(black, sky);
+        else
+            Colorset(black, skyBlue);
+        SetCurrentCursorPos(155, 2 + i);
+        printf("                                         ");
+        SetCurrentCursorPos(155, 2 + i);
+        printf("%s", log[i]);
+    }
+}
+
+void printuserInformation() {
+    SetCurrentCursorPos(156, 27);
+    Colorset(black, white);
+    printf("현재 배 체력 :");
+    SetCurrentCursorPos(170, 27);
+    printf("                           ");
+    SetCurrentCursorPos(170, 27);
+    Colorset(black, brightYellow);
+    printf("%d / %d", head->next->health, head->next->maxhp);
+
+    SetCurrentCursorPos(156, 30);
+    if (itemwork[2] == 1 && vt.min - itemstart2 <= 60) {
+        Colorset(black, white);
+        printf("속도 최대 아이템 사용중");
+        Colorset(black, brightYellow);
+        SetCurrentCursorPos(179, 30);
+        printf("%d분 남았습니다.", (int)(120 - (vt.min - itemstart2)) / 4);
+    }
+    else printf("                                       ");
+
+    SetCurrentCursorPos(156, 31);
+    if (itemwork[4] == 1 && vt.min - itemstart4 <= 500) {
+        Colorset(black, white);
+        printf("인질극 아이템 사용중");
+        Colorset(black, brightYellow);
+        SetCurrentCursorPos(178, 31);
+        printf("%d분 남았습니다.", (int)(500 - (vt.min - itemstart4)) / 4);
+    }
+    else printf("                                       ");
 }
